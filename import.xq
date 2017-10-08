@@ -5,49 +5,21 @@ import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 
 declare namespace импорт = 'order.iroio.ru';
 
-declare function импорт:слушатели ($memb as node()) 
-{
-  let $mo := doc('C:\Users\Пользователь\Downloads\ИРО\dic\mo2.xml')/mo
-    let $sort := for $i in $memb/child::*
-                 order by $i//признак[@имя = "Фамилия"]/text()
-                 where $i//признак[@имя = "Фамилия"]/text()
-                 return $i
-      
-    let $rows :=  <строки>
-         {for $a in $sort
-         return <строка>
-                    <ячейка>
-                      {functx:index-of-node($sort, $a) || "."}
-                    </ячейка>
-                    <ячейка>
-                      {$a//признак[@имя = "Фамилия"]/text() || " " }{$a//признак[@имя = "Имя"]/text() || " "}{$a//признак[@имя = "Отчество"]/text()}
-                    </ячейка>
-                    <ячейка>
-                      {$mo/mo[@name_shot = $a//признак [@имя = "Муниципалитет"]/text()]/text() || ", " 
-                       || $a//признак [@имя = "Школа" or @имя = "Организация"]/text() || ", " 
-                       || $a//признак [@имя = "Должность"]/text() || " "
-                       || $a//признак [@имя = "Предмет"]/text()}
-                    </ячейка>
-                 </строка>}
-      </строки>
-     return $rows 
-};
+declare variable $path := 'C:\Users\Пользователь\Downloads\ИРО\data\tmp\';
 
-
-let $path := 'C:\Users\Пользователь\Downloads\ИРО\data\tmp\'
+declare function импорт:слушатели ($path as xs:string) {
 let $fl := file:list($path,false(), "*.xlsx")
 let $memb := <слушатели группа = '{$path}'>
               {for $a in $fl
               return xlsx:fields($path||$a, 'xl/worksheets/sheet1.xml')}
             </слушатели>
-let $fields := ('Электронная почта', 'Фамилия', 'Имя', 'Отчество', 'Телефон', 'Организация', 'Должность', 'Стаж', 'Дата последнего ПК')
 
 return 
     <слушатели>
-        {for $b in $memb/child::*
+        {for $b in $memb/child::*[признак[@имя = 'Форма']/text() = 'анкета']
           return
               <слушатель>
-                 <курс>Здесь должно быть название курса...</курс> 
+                 <курс>{$memb/child::*[признак[@имя = 'Форма']/text() = 'курс']/признак[@имя='Название']/text()}</курс> 
                  <почта>{$b/признак[@имя = "Электронная почта"]/data()}</почта>
                  <пароль>{substring(random:uuid(), 1, 6)}</пароль>
                  <фамилия>{$b/признак[@имя = "Фамилия"]/data()}</фамилия>
@@ -59,4 +31,7 @@ return
                  <дата_пк>{$b/признак[@имя = "Дата последнего ПК"]/data()}</дата_пк>
               </слушатель>
         }
-    </слушатели>       
+    </слушатели>
+};
+
+serialize (импорт:слушатели ($path), map{'omit-xml-declaration':'no'})
