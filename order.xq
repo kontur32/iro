@@ -1,4 +1,6 @@
+(:библиотека для формирования приказа:)
 import module namespace functx = "http://www.functx.com";
+
 
 import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 import module namespace docx = "docx.iroio.ru" at 'module-docx.xqm';
