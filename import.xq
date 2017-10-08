@@ -5,7 +5,6 @@ import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 
 declare namespace импорт = 'order.iroio.ru';
 
-declare variable $path := 'C:\Users\Пользователь\Downloads\ИРО\data\tmp\';
 
 declare function импорт:слушатели ($path as xs:string) {
 let $fl := file:list($path,false(), "*.xlsx")
@@ -34,4 +33,6 @@ return
     </слушатели>
 };
 
-serialize (импорт:слушатели ($path), map{'omit-xml-declaration':'no'})
+declare variable $path := 'C:\Users\Пользователь\Downloads\ИРО\data\tmp\';
+
+file:write($path|| 'import.xml', импорт:слушатели ($path), map{"method": "xml", 'omit-xml-declaration':'no'}) 
