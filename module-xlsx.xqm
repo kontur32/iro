@@ -34,4 +34,3 @@ declare function xlsx:fields ($xlsx_fullname as xs:string, $sheet_name as xs:str
         return <признак имя = "{$row/c[matches(@r, '[A]{1}')]}"> {$row/c[matches(@r, '[B]{1}')]//text()}</признак>}
    </файл>
   };
-  
