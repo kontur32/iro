@@ -1,4 +1,4 @@
-(:библиотека для формирования приказа:)
+(:формирование приказа о зачислении:)
 import module namespace functx = "http://www.functx.com";
 import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 import module namespace docx = "docx.iroio.ru" at 'module-docx.xqm';
@@ -31,45 +31,26 @@ declare function приказ:слушатели ($memb as node())
                     </ячейка>
                  </строка>}
       </строки>
-     return $rows 
- };
-
-declare function приказ:строки ($path as xs:string) 
-{
-let $fl := file:list($path,false(), "*.xlsx")
-let $memb := <слушатели группа = '{$path}'>
-              {for $a in $fl
-              return xlsx:fields($path||$a, 'xl/worksheets/sheet1.xml')}
-            </слушатели>
-
-for $b in приказ:слушатели($memb)/child::*
-return docx:row($b)
+     return $rows
 };
 
-declare function приказ:собрать ($doc, (:шаблон в виде дерева:)
-                                  $tr) (:строки для встаки в таблицу:) as xs:string
+declare function приказ:строки ($path as xs:string, $mask as xs:string) 
 {
-  let $entry := 
-    copy $c := $doc
-    modify insert node $tr after $c//w:tbl/w:tr[1]      
-    return fn:serialize($c)
-  return $entry
+    for $row in приказ:слушатели( xlsx:fields-dir($path, $mask) )/child::*
+    return docx:row($row)
 };
 
 declare function приказ:записать ($tpl as xs:string,  (:имя файла с шаблоном:)
                                   $path as xs:string, (:папка с данными:)
                                   $output as xs:string) (:имя файла для записи:)
 {
-  let $archive := file:read-binary($tpl)
-  let $doc := fn:parse-xml (archive:extract-text($archive,  'word/document.xml'))
+  let $template := file:read-binary($tpl)
+  let $doc := fn:parse-xml (archive:extract-text($template,  'word/document.xml'))
+  let $entry := docx:table-insert-rows ($doc, приказ:строки($path, '*.xlsx'))
+  let $updated := archive:update ($template, 'word/document.xml', $entry)
   
-  let $table := приказ:строки($path)
-  let $entry := приказ:собрать($doc, $table)
-  
-  let $updated := archive:update ($archive, 'word/document.xml', $entry)
   return  file:write-binary($output, $updated)
 };
-
 
 приказ:записать('C:\Users\Пользователь\Downloads\ИРО\шаблоны\шаблон_приказ1.docx',
               'C:\Users\Пользователь\Downloads\ИРО\data\tmp\', 

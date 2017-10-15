@@ -10,7 +10,13 @@ declare function импорт:слушатели ($path as xs:string) {
 let $fl := file:list($path,false(), "*.xlsx")
 let $memb := <слушатели группа = '{$path}'>
               {for $a in $fl
-              return xlsx:fields($path||$a, 'xl/worksheets/sheet1.xml')}
+              return xlsx:fields(
+                          xlsx:string(
+                              xlsx:get-xml(file:read-binary($path||$a), 'xl/worksheets/sheet1.xml'),
+                              xlsx:get-xml(file:read-binary($path||$a), 'xl/sharedStrings.xml')
+                            )
+                          )
+            }
             </слушатели>
 
 return 

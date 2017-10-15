@@ -1,14 +1,8 @@
 module namespace docx = "docx.iroio.ru";
 declare namespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
-
-(:возвращает содержимое документа Word в виде дерева:)
-declare function docx:get-xml ($docx_name as xs:string) as node ()
-  {
-    fn:parse-xml(archive:extract-text(file:read-binary($docx_name),'word/document.xml'))
-  };
   
 (:функция возвращает строку таблицы Word, сформировнную из переданного узла:)
-declare function docx:row ($row)
+declare function docx:row ($row as node())
   {
       <w:tr w:rsidR="00512FB0" w:rsidTr="00512FB0">
         {
@@ -27,6 +21,17 @@ declare function docx:row ($row)
         }
      </w:tr>    
   };
+
+(:возвращает в виде сериализованной строки таблицу документе Word, в которую начиная со второй строки
+вставлены строки $tr:)
+declare function docx:table-insert-rows ($doc as node(), (:шаблон в виде дерева:)
+                                        $tr  ) (:строки для вставки в таблицу:) as xs:string
+  { 
+    copy $c := $doc
+    modify insert node $tr after $c//w:tbl/w:tr[1]      
+    return fn:serialize($c)
+  };
+
 declare function docx:prop ()
     {
      let $prop := <w:tblPr>
