@@ -30,3 +30,15 @@ declare function iro:get-data($db, $path, $field, $value)
             
   return $b
 };
+
+declare function iro:dir-resource($db, $path)
+{
+  for $a in db:list($db, $path)
+  return substring-after ($a, $path)[not (matches(., '/'))]
+};
+
+declare function iro:meta-file ($db, $path)
+{
+  for $a in iro:dir-resource($db, $path)
+  return iro:get-data ($db, $path || $a , 'Тип', 'мета')
+};
