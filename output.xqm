@@ -41,9 +41,9 @@ return
 
 declare function вывод:сведения($path as xs:string) as node()
 {
-  let $sch := doc('C:\Users\пользователь\Downloads\schools-mo-shot.xml')/школы/школа
+  let $sch := doc('http://iro.od37.ru/dic/schools.xml')/школы/школа
   let $fl := file:list($path,false(), "*.xlsx")
-  let $memb := <слушатели группа = '{$path}'>
+  let $memb := <слушатели>
                 {for $a in $fl
                 return xlsx:fields(
                             xlsx:string(
@@ -70,12 +70,12 @@ declare function вывод:сведения($path as xs:string) as node()
                 <адрес_организации>{string-join(($org/поле[@имя="адрес"]/data(), 'ИНН ' || $org/поле[@имя="ИНН"]/data(), 'КПП ' || $org/поле[@имя="КПП"]/data()), ", ")}</адрес_организации>
              </слушатель>
            
-  return <слушатели группа = '{$path}'>{$out}</слушатели>
+  return <слушатели>{$out}</слушатели>
 };
 
 declare function вывод:приказ ($path as xs:string) 
  {
-    let $mo := doc('C:\Users\Пользователь\Downloads\ИРО\dic\mo2.xml')/mo
+    let $mo := doc('http://iro.od37.ru/dic/mo.xml')/mo
     let $memb := xlsx:fields-dir($path, '*.xlsx')
     let $sort := for $i in $memb/child::*
                  order by $i//признак[@имя = "Фамилия"]/text()
