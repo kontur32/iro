@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dictionaries>
+	<dictionary>
+		<name>schools</name>
+		<location>http://iro.od37.ru/dic/schools.xml</location>
+	</dictionary>
+	<dictionary>
+		<name>mo</name>
+		<location>http://iro.od37.ru/dic/mo.xml</location>
+	</dictionary>
+</dictionaries>
