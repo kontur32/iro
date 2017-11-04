@@ -6,15 +6,15 @@ import module namespace request = "http://exquery.org/ns/request";
 
 declare
   %rest:path("иро/кпк/{$module}/{$function}")
-  %rest:query-param("path", "{$path}")
+  
   %output:method("xml")
   %output:omit-xml-declaration("no")
     
-  function page:forms($module, $function, $path) 
+  function page:forms($module, $function) 
   
   {
     let $module_data := doc('config.xml')//module[name=$module]
     let $xquery := "import module namespace " || $module || "=" || $module_data/namespace/text() || " at " || $module_data/rel_path ||  "; declare variable $param external;" ||
                     $module || ":" || $function || "($param)"
-    return xquery:eval($xquery, map{'param' : request:parameter('param')})
+    return xquery:eval($xquery, map{'param' : request:parameter('курс')})
   };
