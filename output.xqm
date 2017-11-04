@@ -1,11 +1,16 @@
-(:создает XML-файл с таблицей "импорт" для дистанта:)
+(:
+модуль содержит функции, для генерации отчетов
+по группам курсов повышения квалификации
+для всех функций параметом является локальный путь
+к папке с файлами анкет слушателей
+:)
 
 module  namespace вывод = 'out.iroio.ru';
 
 import module namespace functx = "http://www.functx.com";
 import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 
-declare variable $вывод:config := doc('config.xml');
+declare variable $вывод:config := doc('config.xml'); (:пути к словарям и модулям:)
 
 declare function вывод:импорт ($path as xs:string) {
 let $fl := file:list($path,false(), "*.xlsx")
@@ -104,9 +109,3 @@ declare function вывод:приказ ($path as xs:string)
       </строки>
      return $rows
 };
-
-(:
-declare variable $path := 'C:\Users\пользователь\Downloads\ИРО\data\КПК\';
-declare variable $schools :=  'C:\Users\пользователь\Downloads\schools-mo-shot.xml';
-вывод:приказ-зачисление ($path)
-:)
