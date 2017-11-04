@@ -77,7 +77,7 @@ declare function вывод:сведения($path as xs:string) as node()
 
 declare function вывод:приказ ($path as xs:string) 
  {
-    let $mo_dic := $вывод:config//mo[name/text()='mo']/location/text()
+    let $mo_dic := $вывод:config//dictionary[name/text()='mo']/location/text()
     let $mo := doc($mo_dic)/mo
     let $memb := xlsx:fields-dir($path, '*.xlsx')
     let $sort := for $i in $memb/child::*
@@ -88,18 +88,18 @@ declare function вывод:приказ ($path as xs:string)
     let $rows :=  <строки>
          {for $a in $sort
          return <строка>
-                    <ячейка>
+                    <номер>
                       {functx:index-of-node($sort, $a) || "."}
-                    </ячейка>
-                    <ячейка>
+                    </номер>
+                    <фио>
                       {$a//признак[@имя = "Фамилия"]/text() || " " }{$a//признак[@имя = "Имя"]/text() || " "}{$a//признак[@имя = "Отчество"]/text()}
-                    </ячейка>
-                    <ячейка>
+                    </фио>
+                    <должность>
                       {$mo/mo[@name_shot = $a//признак [@имя = "Муниципалитет"]/text()]/text() || ", " 
                        || $a//признак [@имя = "Школа" or @имя = "Организация"]/text() || ", " 
                        || $a//признак [@имя = "Должность"]/text() || " "
                        || $a//признак [@имя = "Предмет"]/text()}
-                    </ячейка>
+                    </должность>
                  </строка>}
       </строки>
      return $rows

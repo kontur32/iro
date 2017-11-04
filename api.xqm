@@ -5,7 +5,7 @@ import module namespace request = "http://exquery.org/ns/request";
 (:import module namespace вывод = 'out.iroio.ru' at 'output.xqm';:)
 
 declare
-  %rest:path("iro/forms/{$module}/{$function}")
+  %rest:path("иро/кпк/{$module}/{$function}")
   %rest:query-param("path", "{$path}")
   %output:method("xml")
   %output:omit-xml-declaration("no")
