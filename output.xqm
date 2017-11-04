@@ -5,6 +5,8 @@ module  namespace вывод = 'out.iroio.ru';
 import module namespace functx = "http://www.functx.com";
 import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 
+declare variable $вывод:config := doc('config.xml');
+
 declare function вывод:импорт ($path as xs:string) {
 let $fl := file:list($path,false(), "*.xlsx")
 let $memb := <слушатели>
@@ -40,7 +42,7 @@ return
 
 declare function вывод:сведения($path as xs:string) as node()
 {
-  let $sch_dic := doc('dictionaries.xml')/child::*/child::*[name/text()='schools']/location/text()
+  let $sch_dic := $вывод:config//dictionary[name/text()='schools']/location/text()
   let $sch := doc($sch_dic)/школы/школа
   let $fl := file:list($path,false(), "*.xlsx")
   let $memb := <слушатели>
@@ -75,7 +77,7 @@ declare function вывод:сведения($path as xs:string) as node()
 
 declare function вывод:приказ ($path as xs:string) 
  {
-    let $mo_dic := doc('dictionaries.xml')/child::*/child::*[name/text()='mo']/location/text()
+    let $mo_dic := $вывод:config//mo[name/text()='mo']/location/text()
     let $mo := doc($mo_dic)/mo
     let $memb := xlsx:fields-dir($path, '*.xlsx')
     let $sort := for $i in $memb/child::*
