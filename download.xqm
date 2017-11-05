@@ -13,7 +13,7 @@ declare function выгрузка:зачисление ($path as xs:string)
   let $template := fetch:binary($tpl) (:имя файла с шаблоном:)
   let $doc := fn:parse-xml (archive:extract-text($template,  'word/document.xml')) 
   
-  let $rows := for $row in вывод:приказ($path)/child::*
+  let $rows := for $row in вывод:зачисление($path)/child::*
                 return docx:row($row)
   
   let $entry := docx:table-insert-rows ($doc, $rows)

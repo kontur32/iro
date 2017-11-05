@@ -80,7 +80,7 @@ declare function вывод:сведения($path as xs:string) as node()
   return <слушатели>{$out}</слушатели>
 };
 
-declare function вывод:приказ ($path as xs:string) 
+declare function вывод:зачисление ($path as xs:string) 
  {
     let $mo_dic := $вывод:config//dictionary[name/text()='mo']/location/text()
     let $mo := doc($mo_dic)/mo
