@@ -1,6 +1,7 @@
 module namespace page = 'http://basex.org/modules/web-page';
-import module namespace request = "http://exquery.org/ns/request";
 
+import module namespace request = "http://exquery.org/ns/request";
+import module namespace конструктор = 'construct.iroio.ru' at 'construct.xqm';
 
 (:import module namespace вывод = 'out.iroio.ru' at 'output.xqm';:)
 
@@ -14,7 +15,7 @@ declare
   
   {
     let $module_data := doc('config.xml')//module[name=$module]
-    let $xquery := "import module namespace " || $module || "=" || $module_data/namespace/text() || " at " || $module_data/rel_path ||  "; declare variable $param external;" ||
-                    $module || ":" || $function || "($param)"
+   
+    let $xquery := конструктор:запрос($module, $function)                
     return xquery:eval($xquery, map{'param' : request:parameter('курс')})
   };
