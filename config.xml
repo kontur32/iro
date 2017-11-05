@@ -7,6 +7,12 @@
 			<rel_path>'output.xqm'</rel_path>
 			<abs_path></abs_path>
 		</module>
+		<module>
+			<name>выгрузка</name>
+			<namespace>'download.iroio.ru'</namespace>
+			<rel_path>'download.xqm'</rel_path>
+			<abs_path></abs_path>
+		</module>        
 	</modules>
 	<dictionaries>
 		<dictionary>
