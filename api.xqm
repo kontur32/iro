@@ -15,7 +15,7 @@ declare
   
   {
     let $module_data := doc('config.xml')//module[name=$module]
-   
     let $xquery := конструктор:xquery($module, $function)                
+    
     return xquery:eval($xquery, map{'param' : request:parameter('курс')})
   };
