@@ -114,9 +114,10 @@ declare function вывод:сводная ($param)
     let $rows := distinct-values(for $a in $students
                     order by $a/признак[@имя=$rows_name]
                     return $a/признак[@имя=$rows_name])
+    
     let $col :=  distinct-values(for $a in $students
                     order by $a/признак[@имя=$cols_name]
-                    return normalize-space($a/признак[@имя=$cols_name]))
+                    return $a/признак[@имя=$cols_name])
                     
     return  
       <rows>
