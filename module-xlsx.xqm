@@ -28,7 +28,7 @@ declare function xlsx:get-xml ($xls_bin as xs:base64Binary, $xml_name as xs:stri
 интерпретируя первую колонку таблицы как имя признака, а вторую колонку как его значение:)
 declare function xlsx:fields ($data_sheet as node()) as node()
   {
-   <файл >
+   <файл>
         {for $row in $data_sheet//row[c[matches(@r, '[A]{1}')]]
         return <признак имя = "{$row/c[matches(@r, '[A]{1}')]}"> {$row/c[matches(@r, '[B]{1}')]//text()}</признак>}
    </файл>
@@ -39,9 +39,11 @@ declare function xlsx:fields ($data_sheet as node()) as node()
  declare function xlsx:fields-dir ($path as xs:string, $mask as xs:string) as node()
    {
      let $fl := file:list($path, false(), $mask)
-     return <каталог путь = '{$path}'>
+     return  
+         <каталог путь = '{$path}'>
                   {for $a in $fl
-                  return xlsx:fields(
+                  return 
+                        xlsx:fields(
                               xlsx:string(
                                   xlsx:get-xml(file:read-binary($path||$a), 'xl/worksheets/sheet1.xml'),
                                   xlsx:get-xml(file:read-binary($path||$a), 'xl/sharedStrings.xml')
@@ -49,4 +51,5 @@ declare function xlsx:fields ($data_sheet as node()) as node()
                          )
                   }
              </каталог>
+             
    };

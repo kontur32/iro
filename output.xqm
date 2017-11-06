@@ -10,16 +10,7 @@ declare variable $вывод:config := doc('config.xml'); (:пути к слов
 
 declare function вывод:импорт ($path as xs:string) {
 let $fl := file:list($path,false(), "*.xlsx")
-let $memb := <слушатели>
-              {for $a in $fl
-              return xlsx:fields(
-                          xlsx:string(
-                              xlsx:get-xml(file:read-binary($path||$a), 'xl/worksheets/sheet1.xml'),
-                              xlsx:get-xml(file:read-binary($path||$a), 'xl/sharedStrings.xml')
-                            )
-                          )
-            }
-            </слушатели>
+let $memb := xlsx:fields-dir ($path, '*.xlsx')
 
 return 
     <слушатели>
@@ -28,7 +19,7 @@ return
               <слушатель>
                  <курс>{$memb/child::*[признак[@имя = 'Форма']/text() = 'курс']/признак[@имя='Название']/text()}</курс> 
                  <почта>{$b/признак[@имя = "Электронная почта"]/data()}</почта>
-                 <пароль></пароль>  (:{substring(random:uuid(), 1, 6)}:)
+                 <пароль></пароль>
                  <фамилия>{$b/признак[@имя = "Фамилия"]/data()}</фамилия>
                  <имя>{$b/признак[@имя = "Имя"]/data()}</имя>
                  <отчество>{$b/признак[@имя = "Отчество"]/data()}</отчество>
@@ -46,21 +37,12 @@ declare function вывод:сведения($path as xs:string) as node()
   let $sch_dic := $вывод:config//dictionary[name/text()='schools']/location/text()
   let $sch := doc($sch_dic)/школы/школа
   let $fl := file:list($path,false(), "*.xlsx")
-  let $memb := <слушатели>
-                {for $a in $fl
-                return xlsx:fields(
-                            xlsx:string(
-                                xlsx:get-xml(file:read-binary($path||$a), 'xl/worksheets/sheet1.xml'),
-                                xlsx:get-xml(file:read-binary($path||$a), 'xl/sharedStrings.xml')
-                              )
-                            )[not (признак[@имя='Фамилия'] = '')]
-              }
-              </слушатели>
+  let $memb := xlsx:fields-dir ($path, '*.xlsx')
 
-
-  let $out:=    for $a in $memb/файл
-      let $index := string-join($a/признак[@имя/data()= ('Муниципалитет', 'Организация')]/text(), '')
-      let $org := $sch[поле[@имя = ('мо_короткое')]/text() || поле[@имя = ('короткое')]/text() = $index]
+  let $out:=
+      for $a in $memb/child::*
+      let $index := string-join($a/child::*[@имя/data()= ('Муниципалитет', 'Организация')]/text(), '')
+      let $org := $sch[child::*[@имя = ('мо_короткое')]/text() || child::*[@имя = ('короткое')]/text() = $index]
       return <слушатель>
                 <муниципалитет>{$org/поле[@имя="мо"]/data()}</муниципалитет>
                 <организация>{$org/поле[@имя="короткое"]/data()}</организация>
