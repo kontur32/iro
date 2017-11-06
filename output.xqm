@@ -8,9 +8,9 @@ import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 
 declare variable $вывод:config := doc('config.xml'); (:пути к словарям и модулям:)
 
-declare function вывод:импорт ($path as xs:string) {
-let $fl := file:list($path,false(), "*.xlsx")
-let $memb := xlsx:fields-dir ($path, '*.xlsx')
+declare function вывод:импорт ($params) {
+
+let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')
 
 return 
     <слушатели>
@@ -32,12 +32,12 @@ return
     </слушатели>
 };
 
-declare function вывод:сведения($path as xs:string) as node()
+declare function вывод:сведения($params) as node()
 {
   let $sch_dic := $вывод:config//dictionary[name/text()='schools']/location/text()
   let $sch := doc($sch_dic)/школы/школа
-  let $fl := file:list($path,false(), "*.xlsx")
-  let $memb := xlsx:fields-dir ($path, '*.xlsx')
+  
+  let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')
 
   let $out:=
       for $a in $memb/child::*
@@ -58,11 +58,11 @@ declare function вывод:сведения($path as xs:string) as node()
   return <слушатели>{$out}</слушатели>
 };
 
-declare function вывод:зачисление ($path as xs:string) 
+declare function вывод:зачисление ($params) 
  {
     let $mo_dic := $вывод:config//dictionary[name/text()='mo']/location/text()
     let $mo := doc($mo_dic)/mo
-    let $memb := xlsx:fields-dir($path, '*.xlsx')
+    let $memb := xlsx:fields-dir($params?курс, '*.xlsx')
     let $sort := for $i in $memb/child::*
                  order by $i//признак[@имя = "Фамилия"]/text()
                  where $i//признак[@имя = "Фамилия"]/text()
@@ -88,10 +88,10 @@ declare function вывод:зачисление ($path as xs:string)
      return $rows
 };
 
-declare function вывод:файлы ($path as xs:string) 
+declare function вывод:файлы ($params) 
  {
      let $file_data := 
-            for $a in xlsx:fields-dir ('C:\Users\пользователь\Downloads\ИРО\data\КПК\', '*.xlsx')/файл[признак[@имя='Фамилия']/data()]
+            for $a in xlsx:fields-dir ($params?курс, '*.xlsx')/файл[признак[@имя='Фамилия']/data()]
             order by $a/признак[@имя='Файл']
             return
               <файл>
@@ -103,3 +103,34 @@ declare function вывод:файлы ($path as xs:string)
               </файл>
 return <папка>{$file_data}</папка>
 };
+
+declare function вывод:сводная ($param) 
+ {
+   let $rows_name := $param?строки
+   let $cols_name := $param?столбцы
+   
+   let $students := xlsx:fields-dir ($param?курс, '*.xlsx')/файл[признак[@имя='Фамилия']/data()]
+ 
+    let $rows := distinct-values(for $a in $students
+                    order by $a/признак[@имя=$rows_name]
+                    return $a/признак[@имя=$rows_name])
+    let $col :=  distinct-values(for $a in $students
+                    order by $a/признак[@имя=$cols_name]
+                    return normalize-space($a/признак[@имя=$cols_name]))
+                    
+    return  
+      <rows>
+        {
+          for $a in distinct-values($rows)
+          return 
+            <row>
+              <название>{$a}</название>
+              <всего>{count($students[признак[@имя=$rows_name]=$a])}</всего>
+              {
+                for $b in $col       
+                return parse-xml('<a'||  functx:replace-multi($b, ('(\d+)', ' '), ('a$1', '-'))|| '>'|| count($students[признак[@имя=$rows_name]=$a and признак[@имя=$cols_name]=$b]) || '</a' ||  functx:replace-multi($b, ('(\d+)', ' '), ('a$1', '-')) || '>')
+              }
+            </row>
+          }
+      </rows>
+ };
