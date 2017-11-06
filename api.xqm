@@ -1,7 +1,6 @@
 module namespace api = 'http://basex.org/modules/web-page';
 
 import module namespace request = "http://exquery.org/ns/request";
-import module namespace конструктор = 'construct.iroio.ru' at 'construct.xqm';
 
 declare
   %rest:path("иро/кпк/{$module}/{$function}")  
