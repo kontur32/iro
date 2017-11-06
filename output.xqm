@@ -109,8 +109,14 @@ declare function вывод:сводная ($param)
    let $rows_name := $param?строки
    let $cols_name := $param?столбцы
    
-   let $students := xlsx:fields-dir ($param?курс, '*.xlsx')/файл[признак[@имя='Фамилия']/data()]
- 
+   let $data := xlsx:fields-dir ($param?курс , '*.xlsx')/файл[признак[@имя='Фамилия']/data()]
+   let $students := copy $d := <a>{$data}</a>
+                   modify 
+                         for $b in $d//признак[not (text())]
+                         return replace value of node $b with 'неуказан'
+                   return $d/child::*
+  
+     
     let $rows := distinct-values(for $a in $students
                     order by $a/признак[@имя=$rows_name]
                     return $a/признак[@имя=$rows_name])
@@ -129,7 +135,7 @@ declare function вывод:сводная ($param)
               <всего>{count($students[признак[@имя=$rows_name]=$a])}</всего>
               {
                 for $b in $col       
-                return parse-xml('<a'||  functx:replace-multi($b, ('(\d+)', ' '), ('a$1', '-'))|| '>'|| count($students[признак[@имя=$rows_name]=$a and признак[@имя=$cols_name]=$b]) || '</a' ||  functx:replace-multi($b, ('(\d+)', ' '), ('a$1', '-')) || '>')
+                return parse-xml('<'||  functx:replace-multi($b, ('(\d+)', ' '), ('a$1', '-'))|| '>'|| count($students[признак[@имя=$rows_name]=$a and признак[@имя=$cols_name]=$b]) || '</' ||  functx:replace-multi($b, ('(\d+)', ' '), ('a$1', '-')) || '>')
               }
             </row>
           }
