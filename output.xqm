@@ -87,3 +87,19 @@ declare function вывод:зачисление ($path as xs:string)
       </строки>
      return $rows
 };
+
+declare function вывод:файлы ($path as xs:string) 
+ {
+     let $file_data := 
+            for $a in xlsx:fields-dir ('C:\Users\пользователь\Downloads\ИРО\data\КПК\', '*.xlsx')/файл[признак[@имя='Фамилия']/data()]
+            order by $a/признак[@имя='Файл']
+            return
+              <файл>
+                  {
+                    for $b in $a/child::*
+                    let $node := replace($b/@имя/data(), ' ', '-')
+                    return parse-xml ('<'|| $node || '>' || $b/text() || '</'|| $node || '>')
+                  }
+              </файл>
+return <папка>{$file_data}</папка>
+};

@@ -26,9 +26,10 @@ declare function xlsx:get-xml ($xls_bin as xs:base64Binary, $xml_name as xs:stri
   
 (:функция возравщает разобранный в дерево лист Excel $sheet_name из файла $xlsx_fullname,
 интерпретируя первую колонку таблицы как имя признака, а вторую колонку как его значение:)
-declare function xlsx:fields ($data_sheet as node()) as node()
+declare function xlsx:fields ($data_sheet as node(), $file_name as xs:string) as node()
   {
    <файл>
+        <признак имя = 'Файл'>{$file_name}</признак>
         {for $row in $data_sheet//row[c[matches(@r, '[A]{1}')]]
         return <признак имя = "{$row/c[matches(@r, '[A]{1}')]}"> {$row/c[matches(@r, '[B]{1}')]//text()}</признак>}
    </файл>
@@ -47,7 +48,7 @@ declare function xlsx:fields ($data_sheet as node()) as node()
                               xlsx:string(
                                   xlsx:get-xml(file:read-binary($path||$a), 'xl/worksheets/sheet1.xml'),
                                   xlsx:get-xml(file:read-binary($path||$a), 'xl/sharedStrings.xml')
-                              )
+                              ), $a
                          )
                   }
              </каталог>
