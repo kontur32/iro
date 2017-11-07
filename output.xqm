@@ -115,8 +115,7 @@ declare function вывод:сводная ($param)
                          for $b in $d//признак[not (text())]
                          return replace value of node $b with 'неуказан'
                    return $d/child::*
-  
-     
+       
     let $rows := distinct-values(for $a in $students
                     order by $a/признак[@имя=$rows_name]
                     return $a/признак[@имя=$rows_name])
@@ -132,12 +131,36 @@ declare function вывод:сводная ($param)
           return 
             <row>
               <название>{$a}</название>
-              <всего>{count($students[признак[@имя=$rows_name]=$a])}</всего>
+              <итого>{count($students[признак[@имя=$rows_name]=$a])}</итого>
               {
                 for $b in $col       
                 return parse-xml('<'||  functx:replace-multi($b, ('(\d+)', ' '), ('a$1', '-'))|| '>'|| count($students[признак[@имя=$rows_name]=$a and признак[@имя=$cols_name]=$b]) || '</' ||  functx:replace-multi($b, ('(\d+)', ' '), ('a$1', '-')) || '>')
               }
             </row>
+            
           }
+          
       </rows>
+ };
+ 
+ declare function вывод:сводная-мо ($params) 
+ {
+   let $data := вывод:сводная($params)
+   let $mo := doc(doc('config.xml')//dictionary[name='mo']/location/text())/child::*/child::*/@name_shot/data()
+  return
+  <rows>
+  { 
+   for $a in $mo
+   return <row><название>{$a}</название>{$data/child::*[название/text()=$a]/child::*[not (name()='название') and matches(name(), ($params?поля)) ]}</row>
+   }
+   <row>
+     <название>Всего</название>
+       {
+         for $a in distinct-values($data/child::*/child::*[not (name()='название') and matches(name(), ($params?поля))]/name())
+         let $b := $data/child::*/child::*[name()=$a]
+         let $c := <node>{sum($b)}</node>
+         return functx:change-element-names-deep($c, xs:QName('node'), xs:QName($a))
+       }
+   </row>
+   </rows>
  };

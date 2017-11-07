@@ -40,3 +40,10 @@ declare function выгрузка:сводная ($path)
   return 
   <p>Файл сохранен {$file_name}{file:write($file_name, вывод:сводная ($path), map{'omit-xml-declaration' : 'no'})}</p>
 };
+
+declare function выгрузка:сводная-мо ($path)
+{
+  let $file_name := $path?курс || 'сводная-мо-' || $path?строки ||'-' || $path?столбцы ||'.xml'
+  return 
+  <p>Файл сохранен {$file_name}{file:write($file_name, вывод:сводная-мо ($path), map{'omit-xml-declaration' : 'no'})}</p>
+};
