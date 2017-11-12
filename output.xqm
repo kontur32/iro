@@ -146,11 +146,13 @@ declare function вывод:сводная ($param)
  declare function вывод:сводная-мо ($params) 
  {
    let $data := вывод:сводная($params)
-   let $mo := doc(doc('config.xml')//dictionary[name='mo']/location/text())/child::*/child::*/@name_shot/data()
+   let $dic_path := doc ('config_forms.xml')//field[@name/data()=$params?строки]//location/text()
+   let $rows_dic := doc($dic_path)/child::*/child::*/@name_shot/data()   
+   
   return
   <rows>
   { 
-   for $a in $mo
+   for $a in $rows_dic
    return <row><название>{$a}</название>{$data/child::*[название/text()=$a]/child::*[not (name()='название') and matches(name(), ($params?поля)) ]}</row>
    }
    <row>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms>
+	<form name = 'анкета'>
+		<fields>
+			<field name ='Муниципалитет'>
+				<dictionary name = 'муниципальные образования'>
+					<location>http://iro.od37.ru/dic/mo.xml</location>
+				</dictionary>
+			</field>
+			<field name ='Тип организации'>
+				<dictionary name = 'типы организаций'>
+					<location>http://iro.od37.ru/dic/types-of-organisations.xml</location>
+				</dictionary>
+			</field>
+			<field name ='Пол'>
+				<dictionary name = 'пол'>
+					<location>http://iro.od37.ru/dic/gender.xml</location>
+				</dictionary>
+			</field>
+			<field name ='Возраст'>
+				<dictionary name = 'возраст'>
+					<location>http://iro.od37.ru/dic/age-groups.xml</location>
+				</dictionary>
+			</field>
+		</fields>
+	</form>
+</forms>
