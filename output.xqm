@@ -143,7 +143,7 @@ declare function вывод:сводная ($param)
       </rows>
  };
  
- declare function вывод:сводная-мо ($params) 
+ declare function вывод:сводная-итоги ($params) 
  {
    let $data := вывод:сводная($params)
    let $dic_path := doc ('config_forms.xml')//field[@name/data()=$params?строки]//location/text()

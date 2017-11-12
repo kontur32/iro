@@ -41,9 +41,9 @@ declare function выгрузка:сводная ($path)
   <p>Файл сохранен {$file_name}{file:write($file_name, вывод:сводная ($path), map{'omit-xml-declaration' : 'no'})}</p>
 };
 
-declare function выгрузка:сводная-мо ($path)
+declare function выгрузка:сводная-итоги ($path)
 {
-  let $file_name := $path?курс || 'сводная-мо-' || $path?строки ||'-' || $path?столбцы ||'.xml'
+  let $file_name := $path?курс || 'сводная-итоги-' || $path?строки ||'-' || $path?столбцы ||'.xml'
   return 
-  <p>Файл сохранен {$file_name}{file:write($file_name, вывод:сводная-мо ($path), map{'omit-xml-declaration' : 'no'})}</p>
+  <p>Файл сохранен {$file_name}{file:write($file_name, вывод:сводная-итоги ($path), map{'omit-xml-declaration' : 'no'})}</p>
 };
