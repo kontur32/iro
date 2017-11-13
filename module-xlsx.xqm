@@ -1,56 +1,60 @@
-(:модуль обработки файлов xlsx:)
+(:модуль обработки файлов .xlsx:)
 
 module  namespace xlsx = 'xlsx.iroio.ru';
+import module namespace functx = "http://www.functx.com";
+
+declare default element namespace "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
 
 (: функция возвращает содержимое компонента $xml_name из файла $xls_name :)
-declare function xlsx:get-xml ($xls_bin as xs:base64Binary, $xml_name as xs:string) as node ()
+declare function xlsx:get-xml ($path as xs:string, $xml_name as xs:string) as node ()
   {
-    fn:parse-xml(replace(archive:extract-text($xls_bin, $xml_name), "xmlns=", "a="))
+        fn:parse-xml(
+            archive:extract-text(
+              file:read-binary($path), $xml_name
+            )
+        )/child::*
   };
  
-(: возращает лист Excel $data_sheet_name  в форме дерева, 
+(: возращает лист Excel $sheet_data  в форме дерева, 
 заменяя значения индексов текстовых полей на их значения из $string_sheet :)
- declare function xlsx:string ($data_sheet as node() , $string_sheet as node()) as node()
+ declare function xlsx:string ($path as xs:string, $sheet as xs:string) as node()
    {
-      let $strings :=  $string_sheet/sst/si/t
-      let $sheet_data :=  $data_sheet
-      
+      let $sheet_data := xlsx:get-xml($path, $sheet)
+      let $strings := xlsx:get-xml($path, 'xl/sharedStrings.xml')//t
+       
       let $new := 
           copy $c := $sheet_data 
           modify 
                 for $i in $c//c[@t='s']
                 return replace value of node $i/v with $strings[number($i/v/text()+1)]/text()
           return $c
-      return $new 
+      return $new
    };
   
 (:функция возравщает разобранный в дерево лист Excel $sheet_name из файла $xlsx_fullname,
 интерпретируя первую колонку таблицы как имя признака, а вторую колонку как его значение:)
 declare function xlsx:fields ($data_sheet as node(), $file_name as xs:string) as node()
   {
+   functx:change-element-ns-deep(  
    <файл>
         <признак имя = 'Файл'>{$file_name}</признак>
         {for $row in $data_sheet//row[c[matches(@r, '[A]{1}')]]
         return <признак имя = "{$row/c[matches(@r, '[A]{1}')]}"> {$row/c[matches(@r, '[B]{1}')]//text()}</признак>}
-   </файл>
+   </файл>, '', '')
+   
   };
  
 (:возвращает дерево обработанных функцией xlsx:fields() файлы Excel из каталога $path,
 соответствующих маске $mask :)
  declare function xlsx:fields-dir ($path as xs:string, $mask as xs:string) as node()
    {
-     let $fl := file:list($path, false(), $mask)
+     let $file_list := file:list($path, false(), $mask)
      return  
+       functx:change-element-ns-deep( 
          <каталог путь = '{$path}'>
-                  {for $a in $fl
-                  return 
-                        xlsx:fields(
-                              xlsx:string(
-                                  xlsx:get-xml(file:read-binary($path||$a), 'xl/worksheets/sheet1.xml'),
-                                  xlsx:get-xml(file:read-binary($path||$a), 'xl/sharedStrings.xml')
-                              ), $a
-                         )
-                  }
-             </каталог>
-             
+                {for $a in $file_list
+                return 
+                   xlsx:fields(xlsx:string($path||$a, 'xl/worksheets/sheet1.xml'), $a)
+                }
+         </каталог>, '', '')        
    };
