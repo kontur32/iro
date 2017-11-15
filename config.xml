@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
+	<base_url>http://localhost:8984/иро</base_url>
 	<modules>
 		<module>
 			<name>вывод</name>
