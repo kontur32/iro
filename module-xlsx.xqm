@@ -58,3 +58,47 @@ declare function xlsx:fields ($data_sheet as node(), $file_name as xs:string) as
                 }
          </каталог>, '', '')        
    };
+   
+declare function xlsx:data-from-col($data as node(), $path)as node()
+{
+  <subjects xmlns=''>{
+  let $a := $data/child::*
+  for $b in 2 to count($a[1]/child::*)
+  return 
+      <subject>
+      <predicate name="Файл">{$path}</predicate>
+      {
+        for $c in $a/child::*[$b]
+        return <predicate name="{$c/parent::*/child::*[1]}">{$c//text()}</predicate>
+      }</subject>
+  }</subjects>
+};
+
+declare function xlsx:data-from-row($data as node(), $path as xs:string ) as node()
+{
+  <subjects xmlns=''>{
+  let $a := $data/child::*
+  for $b in $a[position() >= 2]
+  return 
+      <subject>
+      <predicate name="Файл">{$path}</predicate>
+      {
+        for $c in $b/child::*
+        return
+        <predicate name="{$a[1]/child::*[functx:index-of-node($c/parent::*/child::*, $c)]//text()}">{$c//text()}</predicate>
+      }</subject>
+  }</subjects>
+};
+
+ declare function xlsx:fields-dir2 ($path as xs:string, $mask as xs:string) as node()
+   {
+     let $file_list := file:list($path, false(), $mask)
+     return
+       functx:change-element-ns-deep(    
+         <каталог путь = '{$path}'>
+                {for $a in $file_list
+                return 
+                   xlsx:data-from-col(xlsx:string($path||$a, 'xl/worksheets/sheet1.xml')//sheetData, $a)/child::*
+                }
+         </каталог>, "", "")     
+   };

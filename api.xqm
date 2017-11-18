@@ -1,6 +1,27 @@
-module namespace api = 'http://basex.org/modules/web-page';
+(:~ 
+ : Модуль является частью проекта iro
+ : Модуль содержит функции для обработки запроса API
+ :
+ : @author   iro/ssm
+ : @see      https://github.com/kontur32/iro/blob/dev2/README.md
+ : @version  0.1
+ :)
 
+module namespace api = 'api.iroio.ru';
 import module namespace request = "http://exquery.org/ns/request";
+
+(:~
+ : Функция выполняет запрос Xquery, сгенерированный на основе параметров
+ : переданного GET-запроса
+ :
+ : @param $module - модуль
+ : @param $function - функция из запрашиваемого модуля
+ : @return возращает результат выполнения функции $function из $module c 
+ : с параметрами из параметров запроса
+ : @author iro/ssm
+ : @since 0.1
+ : 
+:)
 
 declare
   %rest:path("иро/кпк/{$module}/{$function}")  
@@ -19,6 +40,20 @@ declare
     
     return xquery:eval( $xquery, map {'param' :  $params} )
   };
+  
+  
+(:~
+ : Функция генериует запрос Xquery, на основе параметров
+ : переданного GET-запроса
+ :
+ : @param $module - модуль
+ : @param $function - функция из запрашиваемого модуля
+ : @return возращает в виде строки запрос Xquery для вызова функции $function  
+ : из $module 
+ : @author iro/ssm
+ : @since 0.1
+ : 
+:)  
   
   declare function api:xquery ($module, $function) as xs:string
 {
