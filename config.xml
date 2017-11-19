@@ -13,6 +13,12 @@
 			<namespace>'download.iroio.ru'</namespace>
 			<rel_path>'download.xqm'</rel_path>
 			<abs_path></abs_path>
+		</module>
+		<module>
+			<name>rdfcons</name>
+			<namespace>'rdf.iroio.ru'</namespace>
+			<rel_path>'rdf.xq'</rel_path>
+			<abs_path></abs_path>
 		</module>        
 	</modules>
 	<dictionaries>

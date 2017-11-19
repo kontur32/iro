@@ -1,6 +1,6 @@
 (:~ 
  : Модуль является частью проекта iro
- : Модуль содержит функции для обработки запроса API
+ : содержит функции для обработки запроса API
  :
  : @author   iro/ssm
  : @see      https://github.com/kontur32/iro/blob/dev2/README.md

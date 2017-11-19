@@ -1,5 +1,11 @@
-(:модуль обработки файлов .xlsx:)
-
+(:~ 
+ : Модуль является частью проекта iro
+ : содержит функции для обработки файлов xlsx
+ :
+ : @author   iro/ssm
+ : @see      https://github.com/kontur32/iro/blob/dev2/README.md
+ : @version  0.1
+ :)
 module  namespace xlsx = 'xlsx.iroio.ru';
 import module namespace functx = "http://www.functx.com";
 
@@ -58,20 +64,36 @@ declare function xlsx:fields ($data_sheet as node(), $file_name as xs:string) as
                 }
          </каталог>, '', '')        
    };
-   
-declare function xlsx:data-from-col($data as node(), $path)as node()
+
+(:~
+ : Функция извлекает данные из файла xlsx 
+ : значения полей в колонках, первая колонка имена полей
+ :
+ : @param $data - дерево из листа xlsx
+ : @param $path - имя файла xlsx, из которого извлекаются данные
+ : @return возрващает нанные в виде дерева
+ : 
+ : @author iro/ssm
+ : @since 0.1
+ : 
+:)   
+declare function xlsx:data-from-col($data, $path as xs:string) as element ()
 {
-  <subjects xmlns=''>{
-  let $a := $data/child::*
-  for $b in 2 to count($a[1]/child::*)
-  return 
+  let $a := $data//sheetData/child::*
+  return
+  <subjects xmlns=''>
+  {
+    for $b in 2 to count($a[1]/child::*)
+    return 
       <subject>
-      <predicate name="Файл">{$path}</predicate>
-      {
-        for $c in $a/child::*[$b]
-        return <predicate name="{$c/parent::*/child::*[1]}">{$c//text()}</predicate>
-      }</subject>
-  }</subjects>
+        <predicate name="Файл">{$path}</predicate>
+        {
+          for $c in $a/child::*[$b]
+          return <predicate name="{$c/parent::*/child::*[1]}">{$c//text()}</predicate>
+        }
+      </subject>
+  }
+  </subjects>
 };
 
 declare function xlsx:data-from-row($data as node(), $path as xs:string ) as node()
@@ -95,10 +117,10 @@ declare function xlsx:data-from-row($data as node(), $path as xs:string ) as nod
      let $file_list := file:list($path, false(), $mask)
      return
        functx:change-element-ns-deep(    
-         <каталог путь = '{$path}'>
+         <subjects путь = '{$path}'>
                 {for $a in $file_list
                 return 
-                   xlsx:data-from-col(xlsx:string($path||$a, 'xl/worksheets/sheet1.xml')//sheetData, $a)/child::*
+                   xlsx:data-from-col(xlsx:string($path||$a, 'xl/worksheets/sheet1.xml'), $a)/child::*
                 }
-         </каталог>, "", "")     
+         </subjects>, "", "")     
    };

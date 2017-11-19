@@ -8,7 +8,8 @@ import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 
 declare variable $вывод:config := doc('config.xml'); (:пути к словарям и модулям:)
 
-declare function вывод:импорт ($params) {
+declare function вывод:импорт ($params) as element()
+{
 
 let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')
 

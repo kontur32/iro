@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <forms>
-	<form name = 'анкета'>
+	<form name = 'анкета' ID_field = "Электронная почта">
 		<fields>
 			<field name ='Муниципалитет'>
 				<dictionary name = 'муниципальные образования'>
