@@ -1,17 +1,17 @@
-module namespace rdfcons = "rdf.iroio.ru";
+module namespace rdfxml = "rdf.iroio.ru";
 
 import module namespace xlsx = "xlsx.iroio.ru" at 'module-xlsx.xqm';
 import module namespace functx = "http://www.functx.com";
 
-declare function rdfcons:курс($params)
+declare function rdfxml:курс($params)
 {
   let $sub :=  xlsx:fields-dir2($params?курс, '*.xlsx')/child::*[child::*[@name="Электронная почта"]/data()]
   let $schema := doc ('config_schemas.xml')/child::*/child::*[@name="анкета"]
   return 
-       rdfcons:element($sub, $schema)
+       rdfxml:element($sub, $schema)
 };
 
-declare function rdfcons:element($data, $schema)
+declare function rdfxml:element($data, $schema)
 {
     let $ID_field := doc('config_forms.xml')/child::*/child::*[@name = "анкета"]/@ID_field/data()
     return 
@@ -31,4 +31,4 @@ declare function rdfcons:element($data, $schema)
 };
 
 
-(:rdfcons:курс(map{'курс':'C:\Users\Пользователь\Downloads\ИРО\data\КПК2\'}):)
+(:rdfxml:курс(map{'курс':'C:\Users\Пользователь\Downloads\ИРО\data\КПК2\'}):)

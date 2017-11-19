@@ -15,7 +15,7 @@
 			<abs_path></abs_path>
 		</module>
 		<module>
-			<name>rdfcons</name>
+			<name>rdfxml</name>
 			<namespace>'rdf.iroio.ru'</namespace>
 			<rel_path>'rdf.xqm'</rel_path>
 			<abs_path></abs_path>
