@@ -12,7 +12,7 @@ declare
   {
      <html>
        <body>
-         <h1>Модули проекте iro</h1>
+         <h1>Модули проекта iro</h1>
          <ul>
          {
            for $a in file:list('C:\Program Files (x86)\BaseX\webapp\iro', false(), '*.xq*')
@@ -39,6 +39,8 @@ declare
   {
      <html>
        <body>
+         <p><i><a href = "/иро/doc">назад к списку модулей...</a></i></p>
+         <p><b>МОДУЛЬ:</b></p>
          {html:convert(inspect:xqdoc ($module))}
        </body>
      </html>

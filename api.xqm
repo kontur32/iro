@@ -17,7 +17,7 @@ import module namespace request = "http://exquery.org/ns/request";
  : @param $module - модуль
  : @param $function - функция из запрашиваемого модуля
  : @return возращает результат выполнения функции $function из $module c 
- : с параметрами из параметров запроса
+ : параметрами из параметров запроса
  : @author iro/ssm
  : @since 0.1
  : 
@@ -44,7 +44,7 @@ declare
   
 (:~
  : Функция генериует запрос Xquery, на основе параметров
- : переданного GET-запроса
+ : полученного GET-запроса
  :
  : @param $module - модуль
  : @param $function - функция из запрашиваемого модуля
