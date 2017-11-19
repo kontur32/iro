@@ -18,14 +18,14 @@ declare function rdfcons:element($data, $schema)
     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     {for $b in $data
     let $c :=
-      <Cлушатель rdf:ID ="{'id-' || functx:replace-multi($b/child::*[@name= $ID_field]/data(), ('@','\.'), ('_at_', '-dot-'))}" 
-                 xml:base = "{$schema/parent::*/@about|| '/' ||$schema/@ID/data()}">
+      <Cлушатель rdf:ID ="{escape-html-uri('id-' || functx:replace-multi($b/child::*[@name= $ID_field]/data(), ('@','\.'), ('_at_', '-dot-')))}" 
+                 xml:base = "{escape-html-uri($schema/parent::*/@about|| '/' ||$schema/@ID/data())}">
         {
           for $a in $b/child::*
           return element {xs:QName(replace($a/@name, ' ', '-'))} {$a/text()}
         }
       </Cлушатель>
-      return functx:change-element-ns-deep($c, $schema/parent::*/@about || '/схемы/' || $schema/@ID ||'#', '' )
+      return functx:change-element-ns-deep($c, escape-html-uri($schema/parent::*/@about || '/схемы/' || $schema/@ID ||'#'), '' )
     }
     </rdf:RDF>
 };
