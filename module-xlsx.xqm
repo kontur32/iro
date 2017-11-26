@@ -10,23 +10,24 @@ module  namespace xlsx = 'xlsx.iroio.ru';
 import module namespace functx = "http://www.functx.com";
 
 declare default element namespace "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+declare namespace r="http://schemas.openxmlformats.org/officeDocument/2006/relationships";
 
 (: функция возвращает содержимое компонента $xml_name из файла $xls_name :)
-declare function xlsx:get-xml ($path as xs:string, $xml_name as xs:string) as node ()
+declare function xlsx:get-xml ($file_path as xs:string, $sheet_name as xs:string) as node ()
   {
         fn:parse-xml(
             archive:extract-text(
-              file:read-binary($path), $xml_name
+              file:read-binary($file_path), $sheet_name
             )
         )/child::*
   };
  
 (: возращает лист Excel $sheet_data  в форме дерева, 
 заменяя значения индексов текстовых полей на их значения из $string_sheet :)
- declare function xlsx:string ($path as xs:string, $sheet as xs:string) as node()
+ declare function xlsx:string ($file_path as xs:string, $sheets_name as xs:string) as node()
    {
-      let $sheet_data := xlsx:get-xml($path, $sheet)
-      let $strings := xlsx:get-xml($path, 'xl/sharedStrings.xml')//t
+      let $sheet_data := xlsx:get-xml($file_path, $sheets_name)
+      let $strings := xlsx:get-xml($file_path, 'xl/sharedStrings.xml')//t
        
       let $new := 
           copy $c := $sheet_data 
@@ -77,39 +78,45 @@ declare function xlsx:fields ($data_sheet as node(), $file_name as xs:string) as
  : @since 0.1
  : 
 :)   
-declare function xlsx:data-from-col($data, $path as xs:string) as element ()
+declare function xlsx:data-from-col($data, $sheet_name) as element ()
 {
   let $a := $data//sheetData/child::*
   return
-  <subjects xmlns=''>
+  <table sheet_name= "{$sheet_name}">
   {
     for $b in 2 to count($a[1]/child::*)
     return 
-      <subject>
-        <predicate name="Файл">{$path}</predicate>
+      <row>
         {
           for $c in $a/child::*[$b]
-          return <predicate name="{$c/parent::*/child::*[1]}">{$c//text()}</predicate>
+          return <cell name="{$c/parent::*/child::*[1]}">{$c//text()}</cell>
         }
-      </subject>
+      </row>
   }
-  </subjects>
+  </table>
 };
 
-declare function xlsx:data-from-row($data as node(), $path as xs:string ) as node()
+declare function xlsx:data-from-row($data as node(), $sheet_name) as node()
 {
-  <subjects xmlns=''>{
-  let $a := $data/child::*
-  for $b in $a[position() >= 2]
-  return 
-      <subject>
-      <predicate name="Файл">{$path}</predicate>
+ let $dn := $data//row[1]//v[text()]/text()
+
+return
+element {xs:QName( 'table')}
+{
+  attribute sheet_name {$sheet_name},
+  for $r in $data//row[position()>1]
+return
+  element {xs:QName( 'row')}
       {
-        for $c in $b/child::*
-        return
-        <predicate name="{$a[1]/child::*[functx:index-of-node($c/parent::*/child::*, $c)]//text()}">{$c//text()}</predicate>
-      }</subject>
-  }</subjects>
+        for $c in 1 to count($dn)
+        return 
+            element {xs:QName( 'cell')}
+            {
+              attribute name {$dn[$c]},
+              $r/c[number($c)-1]/v/text()
+            }
+      }
+}
 };
 
  declare function xlsx:fields-dir2 ($path as xs:string, $mask as xs:string) as node()
@@ -120,7 +127,61 @@ declare function xlsx:data-from-row($data as node(), $path as xs:string ) as nod
          <subjects путь = '{$path}'>
                 {for $a in $file_list
                 return 
-                   xlsx:data-from-col(xlsx:string($path||$a, 'xl/worksheets/sheet1.xml'), $a)/child::*
+                   xlsx:data-from-col(xlsx:string($path||$a, 'xl/worksheets/sheet1.xml'), 'таблица')/child::*
                 }
          </subjects>, "", "")     
    };
+   
+   declare function xlsx:fields-dir3 ($path as xs:string, $mask as xs:string) as node()
+   {
+     let $file_list := file:list($path, false(), $mask)
+     return
+       functx:change-element-ns-deep(    
+         <subjects путь = '{$path}'>
+                {for $a in $file_list
+                return 
+                   xlsx:data-from-row(xlsx:string($path||$a, 'xl/worksheets/sheet1.xml'), 'таблица')/child::*
+                }
+         </subjects>, "", "")     
+   };
+   
+   
+declare function xlsx:data-from-file ($file_path)
+{
+    let $sheets_list :=  archive:entries(file:read-binary($file_path))[contains (text(), 'xl/worksheets/sheet')]/text()
+    let $meta_sheet := 
+          for $a in $sheets_list
+          return xlsx:string ($file_path, $a)[.//sheetData/row[1]/c[1]/v/text()='__мета']
+          
+    let $meta := xlsx:data-from-row($meta_sheet[1], 'мета')
+    let $workbook := xlsx:get-xml ($file_path, 'xl/workbook.xml')
+    let $wbrels := xlsx:get-xml ($file_path, 'xl/_rels/workbook.xml.rels')
+
+return 
+  element file     
+    {
+    attribute file_name {$file_path},  
+      
+    for $sheet in $sheets_list
+    let $sheet_name := $workbook//sheet[@r:id/data()=$wbrels/child::*[@Target/data()= substring-after($sheet,'/')]/@Id/data()]/@name/data()
+    
+    let $sheet_direction := functx:if-empty($meta//row[cell[@name = 'лист']/text()=$sheet_name]/cell[@name='ориентация']/text(), 'строки')
+    let $output := $meta/row[cell[@name='лист'] = $sheet_name]/cell[@name='вывод']/text()
+    
+    let $curr_sheet := xlsx:string($file_path, $sheet)
+    
+    return if ($output = 'да') then (if ($sheet_direction = 'строки') then (xlsx:data-from-row($curr_sheet, $sheet_name)) else (xlsx:data-from-col($curr_sheet, $sheet_name))) else ()
+    }
+};
+
+declare function xlsx:data-from-dir ($path as xs:string, $mask as xs:string)
+{
+  let $file_list := file:list($path, false(), $mask)
+  return
+      element directory 
+      {
+        attribute path {$path},
+        for $a in $file_list
+        return xlsx:data-from-file($path || $a)
+      }
+};

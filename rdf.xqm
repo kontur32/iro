@@ -13,7 +13,7 @@ declare function rdfxml:курс($params)
        rdfxml:element($sub, $schema)
 };
 
-declare function rdfxml:element($data, $schema)
+declare function rdfxml:element($data as node(), $schema as node()*)
 {
     let $ID_field := doc('config_forms.xml')/child::*/child::*[@name = "анкета"]/@ID_field/data()
     let $xmlns := escape-html-uri($schema/parent::*/@about || '/схемы/' || $schema/@ID ||'#')
