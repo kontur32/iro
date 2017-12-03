@@ -1,12 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-	<base_url>http://localhost:8984/иро</base_url>
+	<parts>
+		<part alias = "кпк">
+			<form>
+				<name>импорт</name>
+			</form>
+			<form>
+				<name>зачисление</name>
+			</form>
+			<form>
+				<name>файлы</name>
+			</form>
+			<form>
+				<name>сводная-итоги</name>
+				<alias>МО/тип организации</alias>
+				<params>&amp;строки=Муниципалитет&amp;столбцы=Тип организации&amp;поля=.*</params>
+			</form>
+		</part>
+		<part>
+			<name>расписание</name>
+		</part>
+	</parts>
+	<usertypes>
+		<usertype alias="руководитель курсов">
+			<part>кпк</part>
+			<part>расписание</part>
+		</usertype>
+		<usertype alias="заведующий кафедрой">
+			<part>расписание</part>
+			<part>отчеты</part>
+		</usertype>
+	</usertypes>
 	<modules>
 		<module>
 			<name>вывод</name>
 			<namespace>'out.iroio.ru'</namespace>
 			<rel_path>'output.xqm'</rel_path>
 			<abs_path></abs_path>
+			<functions>
+				<function>
+				</function>
+			</functions>
 		</module>
 		<module>
 			<name>выгрузка</name>

@@ -131,20 +131,7 @@ return
                 }
          </subjects>, "", "")     
    };
-   
-   declare function xlsx:fields-dir3 ($path as xs:string, $mask as xs:string) as node()
-   {
-     let $file_list := file:list($path, false(), $mask)
-     return
-       functx:change-element-ns-deep(    
-         <subjects путь = '{$path}'>
-                {for $a in $file_list
-                return 
-                   xlsx:data-from-row(xlsx:string($path||$a, 'xl/worksheets/sheet1.xml'), 'таблица')/child::*
-                }
-         </subjects>, "", "")     
-   };
-   
+      
    
 declare function xlsx:data-from-file ($file_path)
 {
@@ -185,3 +172,17 @@ declare function xlsx:data-from-dir ($path as xs:string, $mask as xs:string)
         return xlsx:data-from-file($path || $a)
       }
 };
+
+(: --- старые версии --- :)
+   declare function xlsx:fields-dir3 ($path as xs:string, $mask as xs:string) as node()
+   {
+     let $file_list := file:list($path, false(), $mask)
+     return
+       functx:change-element-ns-deep(    
+         <subjects путь = '{$path}'>
+                {for $a in $file_list
+                return 
+                   xlsx:data-from-row(xlsx:string($path||$a, 'xl/worksheets/sheet1.xml'), 'таблица')/child::*
+                }
+         </subjects>, "", "")     
+   };
