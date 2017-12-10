@@ -58,7 +58,7 @@
 		</module>
         <module>
 			<name>кпк</name>
-			<namespace>'kpk.iroio.ru'</namespace>
+			<namespace>'http://www.iroio.ru/кпк'</namespace>
 			<rel_path>'kpk.xqm'</rel_path>
 			<abs_path></abs_path>
 			<functions>

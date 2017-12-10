@@ -5,9 +5,11 @@ import module namespace functx = "http://www.functx.com";
 declare variable $html:local := $config:local;
 declare variable $html:main := $config:main;
 declare variable $html:user_path := $html:local//root/text() || '\' || $html:local//localuser/@alias/data() || '\';
+declare variable $html:base_url := $config:local//base_url;
+declare variable $html:module_url := $config:local//web_url;
 
 declare
-  %rest:path("иро")
+  %rest:path("иро/web")
   %output:method("html")
   %output:omit-xml-declaration("no")
   %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
@@ -31,7 +33,7 @@ declare
     </tr>
     <tr>
       <td>Папка пользвателя:</td>
-      <td>{if ($user_exist) then (<b>{$html:local//localuser/@alias/data()} </b>) else ('не создана')}<a href = "{$html:local//base_url || '/админ/создать'}">  (проверить и создать)</a></td>
+      <td>{if ($user_exist) then (<b>{$html:local//localuser/@alias/data()} </b>) else ('не создана')}<a href = "{$html:module_url || '/админ/создать'}">  (проверить и создать)</a></td>
     </tr>
   </table>
   <p>Разделы:</p>
@@ -44,7 +46,7 @@ declare
         for $a in file:list($html:local//root/text() || $html:local//localuser/@alias/data() || '\', false())[ends-with(., '\')]
           return 
             <li>
-                {<a href = "{$html:local//base_url|| '/' || $a}">{$a}</a>}
+                {<a href = "{$html:module_url || '/' || $a}">{$a}</a>}
             </li>
        }
     </ul>
@@ -55,7 +57,7 @@ declare
 };
 
 declare
-  %rest:path("иро/{$part}")
+  %rest:path("иро/web/{$part}")
   %output:method("html")
   %output:omit-xml-declaration("no")
   %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
@@ -65,7 +67,7 @@ declare
 {
   <html>
       <p><i>{$html:local//moto/text()}</i></p>
-      <p>Пользователь: <a href = "{$html:local//base_url}"> {$html:local//localuser/name/text()}</a></p>
+      <p>Пользователь: <a href = "{ $html:module_url}"> {$html:local//localuser/name/text()}</a></p>
       <p>Это данные раздела <b>{$part}</b></p>
       <p>Путь: {$html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\'}</p>
       <p>Данные:</p>
@@ -82,7 +84,7 @@ declare
 };
 
 declare
-  %rest:path("иро/{$part}/{$data}")
+  %rest:path("иро/web/{$part}/{$data}")
   %output:method("html")
   %output:omit-xml-declaration("no")
   %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
@@ -95,11 +97,11 @@ declare
       <table>
       <tr>
         <td>Пользователь:</td>
-        <td><a href = "{$html:local//base_url}"> {$html:local//localuser/name/text()}</a></td>
+        <td><a href = "{ $html:module_url}"> {$html:local//localuser/name/text()}</a></td>
        </tr>
       <tr>
         <td>Раздел:</td>
-        <td><b>{$part}</b></td>
+        <td><a href = "{ $html:module_url || '/' || $part || '/'}"><b>{$part}</b></a></td>
        </tr>
       <tr>
         <td>Данные из:</td>
@@ -123,8 +125,8 @@ declare
               <tr> 
                 <td>{functx:if-empty($b/alias/text(), $b/name/text())}</td>
                 <td>
-                    <a href = "{$html:local//base_url || '/' || $part || '/вывод/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}">XML</a>
-                    <a href = "{$html:local//base_url || '/' || $part || '/выгрузка/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}">Сохранить</a>
+                    <a href = "{ $html:base_url || '/' || $part || '/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}">XML</a>
+                    <a href = "{ $html:base_url || '/выгрузка/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}">Сохранить</a>
                 </td>
               </tr>
       }
@@ -134,7 +136,7 @@ declare
 };
 
 declare
-  %rest:path("иро/админ/создать")
+  %rest:path("иро/web/админ/создать")
   %output:method("html")
   %output:omit-xml-declaration("no")
   %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
@@ -154,7 +156,7 @@ declare
   }  
     <p>Проверяем наличие необходимых папок пользователя {$html:local//localuser/name/text()} ...</p>
     <p>... и при необходимости создаем</p>
-    <a href = "{$html:local//base_url}">вернуться на главную ... </a>
+    <a href = "{ $html:module_url}">вернуться на главную ... </a>
   </html>
 };
 

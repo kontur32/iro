@@ -7,8 +7,9 @@
  : @version  0.1
  :)
 
-module namespace api = 'api.iroio.ru';
+module namespace api = 'http://www.iroio.ru/api';
 import module namespace request = "http://exquery.org/ns/request";
+declare variable $api:ns := "http://www.iroio.ru";
 
 (:~
  : Функция выполняет запрос Xquery, сгенерированный на основе параметров
@@ -24,14 +25,17 @@ import module namespace request = "http://exquery.org/ns/request";
 :)
 
 declare
-  %rest:path("иро/кпк/{$module}/{$function}")  
+  %rest:path("иро/{$module}/{$function}")  
   %output:method("xml")
   %output:omit-xml-declaration("no")
     
-  function api:forms( $module, $function) 
-  
+  function api:main( $module, $function) 
   {
-    let $xquery := api:xquery($module, $function)
+     let $xquery := "import module namespace " || 
+      $module || "= '" || $api:ns || "/" ||  $module || "' at '" || $module|| ".xqm';"||  
+      "declare variable $param external;" ||
+       $module || ":" || $function || "($param)"
+    
     let $params := map:merge
                     (
                       for $a in request:parameter-names()
@@ -40,41 +44,3 @@ declare
     
     return xquery:eval( $xquery, map {'param' :  $params} )
   };
-
-declare
-  %rest:path("иро1/{$module}/{$function}")  
-  %output:method("xml")
-  %output:omit-xml-declaration("no")
-    
-  function api:forms1( $module, $function) 
-  {
-    let $xquery := api:xquery($module, $function)
-    let $params := map:merge
-                    (
-                      for $a in request:parameter-names()
-                      return map{$a : request:parameter($a)}
-                    )                
-    
-    return xquery:eval( $xquery, map {'param' :  $params} )
-  };
-  
-(:~
- : Функция генериует запрос Xquery, на основе параметров
- : полученного GET-запроса
- :
- : @param $module - модуль
- : @param $function - функция из запрашиваемого модуля
- : @return возращает в виде строки запрос Xquery для вызова функции $function  
- : из $module 
- : @author iro/ssm
- : @since 0.1
- : 
-:)  
-  
-  declare function api:xquery ($module, $function) as xs:string
-{
-  let $module_data := doc('config.xml')//module[name=$module]
-  let $xquery := "import module namespace " || $module || "=" || $module_data/namespace/text() || " at " || $module_data/rel_path ||  "; declare variable $param external;" ||
-                    $module || ":" || $function || "($param)"
-  return $xquery                  
-};
