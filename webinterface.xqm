@@ -125,7 +125,7 @@ declare
               <tr> 
                 <td>{functx:if-empty($b/alias/text(), $b/name/text())}</td>
                 <td>
-                    <a href = "{ $html:base_url || '/' || $part || '/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>XML</button></a>
+                    <a href = "{ $html:base_url || '/' || $part || '/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>В браузере XML</button></a>
                     <a href = "{ $html:base_url || '/выгрузка/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>Сохранить</button></a>
                 </td>
               </tr>
