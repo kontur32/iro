@@ -4,14 +4,16 @@
 		<part alias = "кпк">
 			<form>
 				<name>импорт</name>
-				<alias>ИМПОРТ данных</alias>
+				<alias>Импорт</alias>
 				<params></params>
 			</form>
 			<form>
 				<name>зачисление</name>
+				<alias>Приказ о зачислении</alias>
 			</form>
 			<form>
 				<name>файлы</name>
+				<alias>Анкеты слушателей</alias>
 			</form>
 			<form>
 				<name>сводная-итоги</name>

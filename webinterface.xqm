@@ -4,7 +4,7 @@ import module namespace functx = "http://www.functx.com";
 
 declare variable $html:local := $config:local;
 declare variable $html:main := $config:main;
-declare variable $html:user_path := $html:local//root/text() || '\' || $html:local//localuser/@alias/data() || '\';
+declare variable $html:user_path := $html:local//root/text() || $html:local//localuser/@alias/data() || '\';
 declare variable $html:base_url := $config:local//base_url;
 declare variable $html:module_url := $config:local//web_url;
 
@@ -43,7 +43,7 @@ declare
     (
     <ul>
       {
-        for $a in file:list($html:local//root/text() || $html:local//localuser/@alias/data() || '\', false())[ends-with(., '\')]
+        for $a in file:list($html:user_path, false())[ends-with(., '\')]
           return 
             <li>
                 {<a href = "{$html:module_url || '/' || $a}">{$a}</a>}
@@ -69,11 +69,11 @@ declare
       <p><i>{$html:local//moto/text()}</i></p>
       <p>Пользователь: <a href = "{ $html:module_url}"> {$html:local//localuser/name/text()}</a></p>
       <p>Это данные раздела <b>{$part}</b></p>
-      <p>Путь: {$html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\'}</p>
+      <p>Путь: {$html:user_path || $part || '\'}</p>
       <p>Данные:</p>
       <lu>
         {
-        for $a in file:list($html:local//root/text()|| $html:local//localuser/@alias/data()|| '\' || $part || '\', false())[ends-with(., '\')]
+        for $a in file:list($html:user_path || $part || '\', false())[ends-with(., '\')]
         return 
             <li>
                 {<a href = "{$a}">{$a}</a>}
@@ -109,13 +109,13 @@ declare
        </tr>
       <tr>
         <td>Путь:</td>
-        <td><b>{$html:local//root/text() ||$html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\'}</b></td>
+        <td><b>{$html:user_path || $part || '\' || $data || '\'}</b></td>
       </tr>
       </table>
+      <br/>
       <table>
           <tr>
-            <th>Форма</th>
-            <th>Ссылка</th>
+            <th align = "center" colspan = "2">Формы для выгрузки данных</th>
           </tr>
       {
         for $a in $html:main//parts/part[@alias/data()=$part]
@@ -125,8 +125,8 @@ declare
               <tr> 
                 <td>{functx:if-empty($b/alias/text(), $b/name/text())}</td>
                 <td>
-                    <a href = "{ $html:base_url || '/' || $part || '/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}">XML</a>
-                    <a href = "{ $html:base_url || '/выгрузка/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}">Сохранить</a>
+                    <a href = "{ $html:base_url || '/' || $part || '/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>XML</button></a>
+                    <a href = "{ $html:base_url || '/выгрузка/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>Сохранить</button></a>
                 </td>
               </tr>
       }
