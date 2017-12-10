@@ -55,7 +55,17 @@
 			<namespace>'rdf.iroio.ru'</namespace>
 			<rel_path>'rdf.xqm'</rel_path>
 			<abs_path></abs_path>
-		</module>        
+		</module>
+        <module>
+			<name>кпк</name>
+			<namespace>'kpk.iroio.ru'</namespace>
+			<rel_path>'kpk.xqm'</rel_path>
+			<abs_path></abs_path>
+			<functions>
+				<function>
+				</function>
+			</functions>
+		</module>
 	</modules>
 	<dictionaries>
 		<dictionary>

@@ -40,7 +40,23 @@ declare
     
     return xquery:eval( $xquery, map {'param' :  $params} )
   };
-  
+
+declare
+  %rest:path("иро1/{$module}/{$function}")  
+  %output:method("xml")
+  %output:omit-xml-declaration("no")
+    
+  function api:forms1( $module, $function) 
+  {
+    let $xquery := api:xquery($module, $function)
+    let $params := map:merge
+                    (
+                      for $a in request:parameter-names()
+                      return map{$a : request:parameter($a)}
+                    )                
+    
+    return xquery:eval( $xquery, map {'param' :  $params} )
+  };
   
 (:~
  : Функция генериует запрос Xquery, на основе параметров
