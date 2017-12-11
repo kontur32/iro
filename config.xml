@@ -3,22 +3,40 @@
 	<parts>
 		<part alias = "кпк">
 			<form>
-				<name>импорт</name>
-				<alias>Импорт</alias>
-				<params></params>
-			</form>
-			<form>
 				<name>зачисление</name>
 				<alias>Приказ о зачислении</alias>
 			</form>
 			<form>
+				<name>импорт</name>
+				<alias>Сведения для дистанта</alias>
+			</form>
+			<form>
 				<name>файлы</name>
-				<alias>Анкеты слушателей</alias>
+				<alias>База данных слушателей данного КПК</alias>
+			</form>
+			<form>
+				<name>сведения</name>
+				<alias>Сведения для бухгалтерии</alias>
 			</form>
 			<form>
 				<name>сводная-итоги</name>
-				<alias>МО/тип организации</alias>
+				<alias>Отчет 2 Порайонка</alias>
+				<params>&amp;строки=Муниципалитет&amp;столбцы=Пол&amp;поля=.*</params>
+			</form>
+			<form>
+				<name>сводная-итоги</name>
+				<alias>Отчет-3 ФГОС</alias>
 				<params>&amp;строки=Муниципалитет&amp;столбцы=Тип организации&amp;поля=.*</params>
+			</form>
+			<form>
+				<name>сводная-итоги</name>
+				<alias>Отчет-7 Тип ОО-Пол</alias>
+				<params>&amp;строки=Тип организации&amp;столбцы=Пол&amp;поля=.*</params>
+			</form>
+			<form>
+				<name>сводная-итоги</name>
+				<alias>Отчет-8 Пол-Возраст</alias>
+				<params>&amp;строки=Пол&amp;столбцы=Возраст&amp;поля=.*</params>
 			</form>
 		</part>
 		<part>

@@ -2,7 +2,7 @@
 module namespace выгрузка = 'http://www.iroio.ru/выгрузка';
 
 import module namespace docx = "docx.iroio.ru" at 'module-docx.xqm';
-import module  namespace вывод = 'out.iroio.ru' at 'output.xqm';
+import module  namespace кпк = 'http://www.iroio.ru/кпк' at 'кпк.xqm';
 
 declare function выгрузка:зачисление ($path) as element()
 {
@@ -10,7 +10,7 @@ declare function выгрузка:зачисление ($path) as element()
   let $template := fetch:binary($tpl) (:имя файла с шаблоном:)
   let $doc := parse-xml (archive:extract-text($template,  'word/document.xml')) 
   
-  let $rows := for $row in вывод:зачисление($path)/child::*
+  let $rows := for $row in кпк:зачисление($path)/child::*
                 return docx:row($row)
   
   let $entry := docx:table-insert-rows ($doc, $rows)
@@ -21,29 +21,29 @@ declare function выгрузка:зачисление ($path) as element()
 
 declare function выгрузка:импорт ($path)
 {
-  <p>Файл сохранен {$path?курс || 'импорт.xml' }{file:write($path?курс|| 'импорт.xml', вывод:импорт ($path), map{'omit-xml-declaration' : 'no'})}</p>
+  <p>Файл сохранен {$path?курс || 'импорт.xml' }{file:write($path?курс|| 'импорт.xml', кпк:импорт ($path), map{'omit-xml-declaration' : 'no'})}</p>
 };
 
 declare function выгрузка:сведения ($path)
 {
-  <p>Файл сохранен {$path?курс || 'сведения.xml' }{file:write($path?курс|| 'сведения.xml', вывод:сведения ($path), map{'omit-xml-declaration' : 'no'})}</p>
+  <p>Файл сохранен {$path?курс || 'сведения.xml' }{file:write($path?курс|| 'сведения.xml', кпк:сведения ($path), map{'omit-xml-declaration' : 'no'})}</p>
 };
 
 declare function выгрузка:файлы ($path)
 {
-  <p>Файл сохранен {$path?курс || 'файлы.xml' }{file:write($path?курс|| 'файлы.xml', вывод:файлы ($path), map{'omit-xml-declaration' : 'no'})}</p>
+  <p>Файл сохранен {$path?курс || 'файлы.xml' }{file:write($path?курс|| 'файлы.xml', кпк:файлы ($path), map{'omit-xml-declaration' : 'no'})}</p>
 };
 
 declare function выгрузка:сводная ($path)
 {
   let $file_name := $path?курс || 'сводная-' || $path?строки ||'-' || $path?столбцы ||'.xml'
   return 
-  <p>Файл сохранен {$file_name}{file:write($file_name, вывод:сводная ($path), map{'omit-xml-declaration' : 'no'})}</p>
+  <p>Файл сохранен {$file_name}{file:write($file_name, кпк:сводная ($path), map{'omit-xml-declaration' : 'no'})}</p>
 };
 
 declare function выгрузка:сводная-итоги ($path)
 {
   let $file_name := $path?курс || 'сводная-итоги-' || $path?строки ||'-' || $path?столбцы ||'.xml'
   return 
-  <p>Файл сохранен {$file_name}{file:write($file_name, вывод:сводная-итоги ($path), map{'omit-xml-declaration' : 'no'})}</p>
+  <p>Файл сохранен {$file_name}{file:write($file_name, кпк:сводная-итоги ($path), map{'omit-xml-declaration' : 'no'})}</p>
 };

@@ -24,16 +24,16 @@ declare function xlsx:get-xml ($file_path as xs:string, $sheet_name as xs:string
  
 (: возращает лист Excel $sheet_data  в форме дерева, 
 заменяя значения индексов текстовых полей на их значения из $string_sheet :)
- declare function xlsx:string ($file_path as xs:string, $sheets_name as xs:string) as node()
+ declare function xlsx:string ($file_path as xs:string, $sheet_name as xs:string) as node()
    {
-      let $sheet_data := xlsx:get-xml($file_path, $sheets_name)
+      let $sheet_data := xlsx:get-xml($file_path, $sheet_name)
       let $strings := xlsx:get-xml($file_path, 'xl/sharedStrings.xml')//t
        
       let $new := 
           copy $c := $sheet_data 
           modify 
                 for $i in $c//c[@t='s']
-                return replace value of node $i/v with $strings[number($i/v/text()+1)]/text()
+                return replace value of node $i/v with $strings[number($i/v/text())+1]/text()
           return $c
       return $new
    };
@@ -140,7 +140,7 @@ declare function xlsx:data-from-file ($file_path)
           for $a in $sheets_list
           return xlsx:string ($file_path, $a)[.//sheetData/row[1]/c[1]/v/text()='__мета']
           
-    let $meta := xlsx:data-from-row($meta_sheet[1], 'мета')
+    let $meta := xlsx:data-from-row($meta_sheet, 'мета')
     let $workbook := xlsx:get-xml ($file_path, 'xl/workbook.xml')
     let $wbrels := xlsx:get-xml ($file_path, 'xl/_rels/workbook.xml.rels')
 
