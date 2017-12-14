@@ -50,7 +50,7 @@ declare function выгрузка:сводная-итоги ($path)
 
 
 (:--- эксперименты ---:)
-declare function выгрузка:зачисление2 ($params) as element()
+declare function выгрузка:шаблон-таблица ($params) as element()
 {
   let $template := if (starts-with($params?шаблон, 'http://' )) then fetch:binary(escape-html-uri($params?шаблон)) else file:read-binary($params?шаблон)
   return
