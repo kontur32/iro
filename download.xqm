@@ -4,6 +4,9 @@ module namespace выгрузка = 'download.iroio.ru';
 import module namespace docx = "docx.iroio.ru" at 'module-docx.xqm';
 import module  namespace вывод = 'out.iroio.ru' at 'output.xqm';
 
+declare variable $выгрузка:вывод := "import module  namespace вывод = 'out.iroio.ru' at 'output.xqm';
+                                     declare variable $params external;";
+
 declare function выгрузка:зачисление ($path) as element()
 {
   let $tpl := 'http://iro.od37.ru/tpl/%D0%BF%D1%80%D0%B8%D0%BA%D0%B0%D0%B7_%D0%B7%D0%B0%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.docx'
@@ -56,6 +59,8 @@ declare function выгрузка:шаблон-таблица ($params) as eleme
   return
   <p>
       Файл сохранен {$params?курс || $params?файл }
-      {file:write-binary($params?курс ||$params?файл, docx:вставить-таблицу($template, вывод:зачисление($params)) )}
+      {file:write-binary($params?курс ||$params?файл, docx:вставить-таблицу($template, 
+      xquery:eval( $выгрузка:вывод || 'вывод:' || $params?форма || '($params)', map {'params' :  $params} ) 
+    ) )}
   </p>
 };
