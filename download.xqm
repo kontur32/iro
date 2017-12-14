@@ -47,3 +47,15 @@ declare function выгрузка:сводная-итоги ($path)
   return 
   <p>Файл сохранен {$file_name}{file:write($file_name, вывод:сводная-итоги ($path), map{'omit-xml-declaration' : 'no'})}</p>
 };
+
+
+(:--- эксперименты ---:)
+declare function выгрузка:зачисление2 ($params) as element()
+{
+  let $template := if (starts-with($params?шаблон, 'http://' )) then fetch:binary(escape-html-uri($params?шаблон)) else file:read-binary($params?шаблон)
+  return
+  <p>
+      Файл сохранен {$params?курс || $params?файл }
+      {file:write-binary($params?курс ||$params?файл, docx:вставить-таблицу($template, вывод:зачисление($params)) )}
+  </p>
+};
