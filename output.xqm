@@ -42,6 +42,8 @@ declare function вывод:сведения($params) as node()
 
   let $out:=
       for $a in $memb/child::*
+      order by $a/child::*[@имя='Муниципалитет']/data()
+      where  $a/child::*[@имя='Фамилия']/data()
       let $index := string-join($a/child::*[@имя/data()= ('Муниципалитет', 'Организация')]/text(), '')
       let $org := $sch[child::*[@имя = ('мо_короткое')]/text() || child::*[@имя = ('короткое')]/text() = $index]
       return <слушатель>
