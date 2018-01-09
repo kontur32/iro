@@ -6,14 +6,14 @@ module  namespace кпк = 'http://www.iroio.ru/кпк';
 import module namespace functx = "http://www.functx.com";
 import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 
+
 declare variable $кпк:config := doc('config.xml'); (:пути к словарям и модулям:)
 
-declare function кпк:импорт ($params) as element()
+declare %output:method("xhtml") function кпк:импорт ($params) as element()
 {
 
 let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')
-
-return 
+let $result := 
     <слушатели>
         {for $b in $memb/child::*[признак[@имя = 'Форма']/text() = 'анкета']
           return
@@ -31,9 +31,10 @@ return
               </слушатель>
         }
     </слушатели>
+ return  $result
 };
 
-declare function кпк:сведения($params) as node()
+declare  function кпк:сведения($params) as node()
 {
   let $sch_dic := $кпк:config//dictionary[name/text()='schools']/location/text()
   let $sch := doc($sch_dic)/школы/школа

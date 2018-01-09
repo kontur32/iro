@@ -27,14 +27,36 @@ declare variable $api:ns := "http://www.iroio.ru";
 declare
   %rest:path("иро/{$module}/{$function}")  
   %output:method("xml")
-  %output:omit-xml-declaration("no")
+  %output:omit-xml-declaration("yes")
     
   function api:main( $module, $function) 
   {
      let $xquery := "import module namespace " || 
-      $module || "= '" || $api:ns || "/" ||  $module || "' at '" || $module|| ".xqm';"||  
+      $module || "= '" || $api:ns || "/" ||  $module || "' at '" || $module|| ".xqm';"|| 
       "declare variable $param external;" ||
        $module || ":" || $function || "($param)"
+    
+    let $params := map:merge
+                    (
+                      for $a in request:parameter-names()
+                      return map{$a : request:parameter($a)}
+                    )                
+    
+    return xquery:eval( $xquery, map {'param' :  $params} )
+  };
+  
+  declare
+  %rest:path("иро/html/{$module}/{$function}")  
+  %output:method("xhtml")
+  %output:omit-xml-declaration("yes")
+    
+  function api:main-html( $module, $function) 
+  {
+     let $xquery := "import module namespace " || 
+      $module || "= '" || $api:ns || "/" ||  $module || "' at '" || $module|| ".xqm';"|| 
+      "import module namespace html='html.iroio.ru' at 'webinterface.xqm';" ||
+      "declare variable $param external;" ||
+       " html:xml-to-table(" || $module || ":" || $function || "($param))"
     
     let $params := map:merge
                     (

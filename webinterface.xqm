@@ -125,7 +125,7 @@ declare
               <tr> 
                 <td>{functx:if-empty($b/alias/text(), $b/name/text())}</td>
                 <td>
-                    <a href = "{ $html:base_url || '/' || $part || '/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>В браузере XML</button></a>
+                    <a href = "{ $html:base_url || '/html/' || $part || '/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>В браузере XML</button></a>
                     <a href = "{ $html:base_url || '/выгрузка/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>Сохранить</button></a>
                 </td>
               </tr>
@@ -160,3 +160,32 @@ declare
   </html>
 };
 
+declare
+ %output:method("xhtml")
+  %output:doctype-public("-//W3C//DTD XHTML 1.0 Transitional//EN")
+  %output:doctype-system("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
+ 
+ function html:xml-to-table($a)
+{  
+<html>
+<table border="1px">
+    <tr>
+      {
+        for $cell in $a/child::*[1]/child::*
+        return
+          <th>{$cell/name()}</th>
+      }
+    </tr>
+  {
+    for $row in $a/child::*
+    return 
+      <tr>
+          {
+          for $cell in $row/child::*
+          return <td>{$cell/text()}</td>
+          }
+       </tr>
+   }
+</table>
+</html>
+};
