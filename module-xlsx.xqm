@@ -173,6 +173,32 @@ declare function xlsx:data-from-dir ($path as xs:string, $mask as xs:string)
       }
 };
 
+(: --- возращает содержимое листа эксель в виде дереве - данные в строках  --- :)
+declare function xlsx:xlsx-to-table-rows($data as node()) as node()
+{
+  let $heads := 
+        for $b in $data//row[1]
+        return $b//v/text()
+  
+  return 
+  element {QName('','table')}
+  {    
+  for $b in $data//row[position()>1]
+  return
+    element {QName('','row')}
+      { 
+      for $c in $b/child::*
+      return 
+          element {QName('','cell')} 
+            {
+              attribute {'name'} {$heads[count($c/preceding-sibling::*)+1]}, 
+              $c/v/text()
+            }
+      }
+  }
+};
+
+
 (: --- старые версии --- :)
    declare function xlsx:fields-dir3 ($path as xs:string, $mask as xs:string) as node()
    {
