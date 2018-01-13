@@ -1,8 +1,9 @@
-declare namespace egrul = 'egrul';
-import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
+module namespace dadata = 'https://dadata.ru/';
+
+import module namespace xlsx = 'xlsx.iroio.ru' at '../module-xlsx.xqm';
 import module namespace functx = "http://www.functx.com";
 
-declare function egrul:get-from-dadata($org)
+declare function dadata:get-from-dadata($org)
 {
 let $data :=
     <организации>
@@ -26,7 +27,7 @@ let $data :=
                               $binary//ogrn,
                               $binary//management/name,
                               $binary//management/post,
-                              <mo>{functx:if-empty($binary//area/text(),$binary//city/text())}</mo>,
+                              <mo>{ if (substring ($binary//address/data/okato, 1, 3) = '242') then ($binary//area/text()) else ($binary//city/text())}</mo>,
                               $binary//area,
                               $binary//city,
                               $binary//address/unrestricted__value,
@@ -46,20 +47,23 @@ let $data :=
   return $data
 };
  
-declare function egrul:add-orgtype ($org_egrul as element()*, $org_type as element()*)
+declare function dadata:add-orgtype ($org_egrul as element()*, $org_type as element()*)
 {
   for $c in $org_egrul
-  let $type := $org_type//row[cell[@name="ИНН"]/text() = $c/inn/text()]/cell[@name="Тип_учеждения"]/text()
+  let $type := $org_type//row[cell[@name="ИНН"]/text() = $c/inn/text()]/cell[@name="Тип_учреждения"]/text()
   return 
       $c update insert node <org_type>{functx:if-empty($type, 'школа')}</org_type> into .
 };
+
+declare function dadata:merge-lists ($org_lists)
+{
+  <организации>
+         {
+         for $a in $org_lists
+         let $org := fetch:xml($a)/child::*
+         return 
+              dadata:add-orgtype (dadata:get-from-dadata($org//cell[@name="ИНН"]/text())//организация, $org)
+         }
+    </организации>
+};
  
- let $org1 :=  xlsx:xlsx-to-table-rows(xlsx:string('C:\Users\Пользователь\Downloads\Библиотека_ОО-02.xlsx','xl/worksheets/sheet1.xml'))
- let $org2 := fetch:xml('http://iro.od37.ru/dic/schools02.xml')//поле[@имя="ИНН"]/text()
- 
- return file:write("C:\Users\Пользователь\Downloads\org01-tmp.xml", 
-        <организации>{
-            egrul:add-orgtype (egrul:get-from-dadata($org2)//организация, <a/>),
-            egrul:add-orgtype (egrul:get-from-dadata($org1//cell[@name="ИНН"]/text())//организация, $org1)
-        }</организации>, 
-       map{"omit-xml-declaration":"no"})
