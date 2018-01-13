@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<local>
+		<moto>... зри в корень!</moto>
+		<base_url>http://localhost:8984/иро</base_url>
+		<web_url>http://localhost:8984/иро/web</web_url>
+		<root>C:\Documents and Settings\Admin\Мои документы\Downloads\ИРО\</root>
+		<localuser alias = "калинин">
+			<name>Калинин Александр</name>
+			<usertype>руководитель курсов</usertype>
+		</localuser>
+	</local>
+</config>
