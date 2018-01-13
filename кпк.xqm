@@ -9,7 +9,7 @@ import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 
 declare variable $кпк:config := doc('config.xml'); (:пути к словарям и модулям:)
 
-declare %output:method("xhtml") function кпк:импорт ($params) as element()
+declare %output:method("xml") function кпк:импорт ($params) as element()
 {
 
 let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')
