@@ -89,6 +89,10 @@
 	</modules>
 	<dictionaries>
 		<dictionary>
+			<name>oo</name>
+			<location>http://iro37.ru:8984/иро/данные/образовательные организации</location>
+		</dictionary>  
+		<dictionary>
 			<name>schools</name>
 			<location>http://iro.od37.ru/dic/schools.xml</location>
 		</dictionary>

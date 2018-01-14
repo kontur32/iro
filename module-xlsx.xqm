@@ -46,7 +46,7 @@ declare function xlsx:fields ($data_sheet as node(), $file_name as xs:string) as
    <файл>
         <признак имя = 'Файл'>{$file_name}</признак>
         {for $row in $data_sheet//row[c[matches(@r, '[A]{1}')]]
-        return <признак имя = "{$row/c[matches(@r, '[A]{1}')]}"> {$row/c[matches(@r, '[B]{1}')]//text()}</признак>}
+        return <признак имя = "{$row/c[matches(@r, '[A]{1}')]}"> {$row/c[matches(@r, '[B]{1}')]/v/text()}</признак>}
    </файл>, '', '')
    
   };

@@ -34,27 +34,29 @@ let $result :=
  return  $result
 };
 
-declare  function кпк:сведения($params) as node()
+
+declare function кпк:сведения ($params) as element ()
 {
-  let $sch_dic := $кпк:config//dictionary[name/text()='schools']/location/text()
-  let $sch := doc($sch_dic)/школы/школа
+  let $org_path := iri-to-uri($кпк:config//dictionary[name/text()='oo']/location/text())
+  let $orgs := fetch:xml($org_path)/child::*/child::*
   
   let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')
 
   let $out:=
       for $a in $memb/child::*
-      let $index := string-join($a/child::*[@имя/data()= ('Муниципалитет', 'Организация')]/text(), '')
-      let $org := $sch[child::*[@имя = ('мо_короткое')]/text() || child::*[@имя = ('короткое')]/text() = $index]
+      let $org := $orgs[inn = $a//признак[@имя='ИНН организации']/text()]
       return <слушатель>
-                <муниципалитет>{$org/поле[@имя="мо"]/data()}</муниципалитет>
-                <организация>{$org/поле[@имя="короткое"]/data()}</организация>
-                <руководитель>{$org/поле[@имя="руководитель"]/data()}</руководитель>
+                <муниципалитет>{$org/mo/text()}</муниципалитет>
+                <организация>{$org/short__with__opf/text()}</организация>
+                <руководитель>{$org/name/text()}</руководитель>
                 <ФИО_слушателя>{string-join($a/признак[@имя=('Фамилия', 'Имя', 'Отчество')]/text(), ' ')}</ФИО_слушателя>
                 <должность>{$a/признак[@имя='Должность']/text()}</должность>
                 <номер></номер>
                 <дата></дата>
                 <срок></срок>
-                <адрес_организации>{string-join(($org/поле[@имя="адрес"]/data(), 'ИНН ' || $org/поле[@имя="ИНН"]/data(), 'КПП ' || $org/поле[@имя="КПП"]/data()), ", ")}</адрес_организации>
+                <адрес_организации>
+                  {string-join(($org/postal__code/text(), $org/unrestricted__value/text(), 'ИНН ' || $org/inn/text() , 'КПП ' || $org/kpp/text()), ", ")}
+                </адрес_организации>
              </слушатель>
            
   return <слушатели>{$out}</слушатели>
@@ -168,3 +170,30 @@ declare function кпк:сводная ($param)
    </row>
    </rows>
  };
+ 
+ (: ------- Старые версии ----------:)
+ declare  function кпк:сведения-old01($params) as node()
+{
+  let $sch_dic := $кпк:config//dictionary[name/text()='schools']/location/text()
+  let $sch := doc($sch_dic)/школы/школа
+  
+  let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')
+
+  let $out:=
+      for $a in $memb/child::*
+      let $index := string-join($a/child::*[@имя/data()= ('Муниципалитет', 'Организация')]/text(), '')
+      let $org := $sch[child::*[@имя = ('мо_короткое')]/text() || child::*[@имя = ('короткое')]/text() = $index]
+      return <слушатель>
+                <муниципалитет>{$org/поле[@имя="мо"]/data()}</муниципалитет>
+                <организация>{$org/поле[@имя="короткое"]/data()}</организация>
+                <руководитель>{$org/поле[@имя="руководитель"]/data()}</руководитель>
+                <ФИО_слушателя>{string-join($a/признак[@имя=('Фамилия', 'Имя', 'Отчество')]/text(), ' ')}</ФИО_слушателя>
+                <должность>{$a/признак[@имя='Должность']/text()}</должность>
+                <номер></номер>
+                <дата></дата>
+                <срок></срок>
+                <адрес_организации>{string-join(($org/поле[@имя="адрес"]/data(), 'ИНН ' || $org/поле[@имя="ИНН"]/data(), 'КПП ' || $org/поле[@имя="КПП"]/data()), ", ")}</адрес_организации>
+             </слушатель>
+           
+  return <слушатели>{$out}</слушатели>
+};
