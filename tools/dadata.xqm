@@ -67,3 +67,9 @@ declare function dadata:merge-lists ($org_lists)
     </организации>
 };
  
+declare function dadata:order ($org as element()*)
+{
+  for $a in $org
+  order by  substring ($a/okato, 1, 3) descending, $a/mo/text() 
+  return $a
+};
