@@ -6,7 +6,7 @@ import module  namespace кпк = 'http://www.iroio.ru/кпк' at 'кпк.xqm';
 
 declare function выгрузка:зачисление ($path) as element()
 {
-  let $tpl := 'http://iro.od37.ru/tpl/%D0%BF%D1%80%D0%B8%D0%BA%D0%B0%D0%B7_%D0%B7%D0%B0%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5.docx'
+  let $tpl := 'http://iro.od37.ru/tpl/%d0%bf%d1%80%d0%b8%d0%ba%d0%b0%d0%b7_%d0%b7%d0%b0%d1%87%d0%b8%d1%81%d0%bb%d0%b5%d0%bd%d0%b8%d0%b5.docx'
   let $template := fetch:binary($tpl) (:имя файла с шаблоном:)
   let $doc := parse-xml (archive:extract-text($template,  'word/document.xml')) 
   
@@ -24,7 +24,23 @@ declare function выгрузка:импорт ($path)
   <p>Файл сохранен {$path?курс || 'импорт.xml' }{file:write($path?курс|| 'импорт.xml', кпк:импорт ($path), map{'omit-xml-declaration' : 'no'})}</p>
 };
 
-declare function выгрузка:сведения ($path)
+
+declare function выгрузка:сведения ($path) as element()
+{
+ let $tpl := 'http://iro.od37.ru/tpl/%d0%91%d0%bb%d0%b0%d0%bd%d0%ba%202%20%d0%b4%d0%bb%d1%8f%20%d0%b1%d1%83%d1%85%d0%b3%d0%b0%d0%bb%d1%82%d0%b5%d1%80%d0%b8%d0%b8.docx'
+ let $template := fetch:binary($tpl) (:имя файла с шаблоном:)
+ let $doc := parse-xml (archive:extract-text($template,  'word/document.xml'))
+
+ let $rows := for $row in кпк:сведения($path)/child::*
+              return docx:row($row)
+               
+ let $entry := docx:table-insert-rows ($doc, $rows)
+ let $updated := archive:update ($template, 'word/document.xml', $entry)
+
+ return <p>Файл сохранен {$path?курс || 'сведения.docx' }{file:write-binary ($path?курс ||'сведения.docx', $updated)}</p>
+};
+
+declare function выгрузка:сведения1 ($path)
 {
   <p>Файл сохранен {$path?курс || 'сведения.xml' }{file:write($path?курс|| 'сведения.xml', кпк:сведения ($path), map{'omit-xml-declaration' : 'no'})}</p>
 };
