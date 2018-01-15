@@ -27,7 +27,10 @@ let $data :=
                               $binary//ogrn,
                               $binary//management/name,
                               $binary//management/post,
-                              <mo>{ if (substring ($binary//address/data/okato, 1, 3) = '242') then ($binary//area/text()) else ($binary//city/text())}</mo>,
+                              <mo>{if (substring ($binary//address/data/oktmo, 1, 3) = '246') 
+                                  then ($binary//area/text())
+                                  else ($binary//city/text())}
+                              </mo>,
                               $binary//area,
                               $binary//city,
                               $binary//address/unrestricted__value,
@@ -57,19 +60,16 @@ declare function dadata:add-orgtype ($org_egrul as element()*, $org_type as elem
 
 declare function dadata:merge-lists ($org_lists)
 {
-  <организации>
-         {
          for $a in $org_lists
          let $org := fetch:xml($a)/child::*
          return 
-              dadata:add-orgtype (dadata:get-from-dadata($org//cell[@name="ИНН"]/text())//организация, $org)
-         }
-    </организации>
+              dadata:add-orgtype (dadata:get-from-dadata($org/child::*/child::*[@name="ИНН" or @имя="ИНН"  ]/text())//организация, $org)
+        
 };
  
-declare function dadata:order ($org as element()*)
+declare function dadata:order ($org)
 {
   for $a in $org
-  order by  substring ($a/okato, 1, 3) descending, $a/mo/text() 
-  return $a
+  order by   substring ($a/oktmo, 1, 3) descending, $a/mo/text() 
+  return $a 
 };

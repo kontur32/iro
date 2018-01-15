@@ -15,7 +15,7 @@ declare %output:method("xml") function кпк:импорт ($params) as element(
 let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')
 let $result := 
     <слушатели>
-        {for $b in $memb/child::*[признак[@имя = 'Форма']/text() = 'анкета']
+        {for $b in $memb/child::*[признак[@имя = 'Фамилия']/text()] (: [признак[@имя = 'Форма']/text() = 'анкета'] :)
           return
               <слушатель>
                  <курс>{$memb/child::*[признак[@имя = 'Форма']/text() = 'курс']/признак[@имя='Название']/text()}</курс> 
@@ -43,7 +43,7 @@ declare function кпк:сведения ($params) as element ()
   let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')
 
   let $out:=
-      for $a in $memb/child::*
+      for $a in $memb/child::*[признак[@имя = 'Фамилия']/text()]
       let $org := $orgs[inn = $a//признак[@имя='ИНН организации']/text()]
       return <слушатель>
                 <номер>{functx:index-of-node($memb/child::*, $a) || "."}</номер>
