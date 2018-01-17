@@ -5,9 +5,10 @@ module  namespace кпк = 'http://www.iroio.ru/кпк';
 
 import module namespace functx = "http://www.functx.com";
 import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
-
+import module namespace config = 'config.iroio.ru' at 'config.xqm';
 
 declare variable $кпк:config := doc('config.xml'); (:пути к словарям и модулям:)
+declare variable $кпк:local := $config:local;
 
 declare %output:method("xml") function кпк:импорт ($params) as element()
 {
@@ -38,7 +39,10 @@ let $result :=
 declare function кпк:сведения ($params) as element ()
 {
   let $org_path := iri-to-uri($кпк:config//dictionary[name/text()='oo']/location/text())
-  let $orgs := fetch:xml(escape-html-uri($org_path))/child::*/child::*
+  let $orgs := 
+        if ($кпк:local//dictionary[name/text()='оо']/location/text())
+        then (doc($кпк:local//dictionary[name/text()='оо']/location/text())/child::*/child::*)
+        else (fetch:xml( $org_path)/child::*/child::*)
  
   let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')/child::*[признак[@имя = 'Фамилия']/text()]
   

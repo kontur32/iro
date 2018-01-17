@@ -9,5 +9,11 @@
 			<name>Калинин Александр</name>
 			<usertype>руководитель курсов</usertype>
 		</localuser>
+		<dictionaries>
+		  <dictionary>
+			<name>оо</name>
+			<location>C:\Users\Пользователь\Downloads\образовательные-организации.xml</location>
+		  </dictionary>  
+     </dictionaries>
 	</local>
 </config>
