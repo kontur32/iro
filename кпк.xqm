@@ -39,14 +39,16 @@ declare function кпк:сведения ($params) as element ()
 {
   let $org_path := iri-to-uri($кпк:config//dictionary[name/text()='oo']/location/text())
   let $orgs := fetch:xml($org_path)/child::*/child::*
+ 
+  let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')/child::*[признак[@имя = 'Фамилия']/text()]
   
-  let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')
-
   let $out:=
-      for $a in $memb/child::*[признак[@имя = 'Фамилия']/text()]
+      for $a in $memb
+     
       let $org := $orgs[inn = $a//признак[@имя='ИНН организации']/text()]
+      order by  substring ($org/oktmo, 1, 3) descending, $org/mo/text()
       return <слушатель>
-                <номер>{functx:index-of-node($memb/child::*, $a) || "."}</номер>
+                <номер></номер> 
                 <муниципалитет>{$org/mo/text()}</муниципалитет>
                 <организация>{$org/short__with__opf/text()}</организация>
                 <руководитель>{$org/name/text()}</руководитель>
@@ -60,8 +62,8 @@ declare function кпк:сведения ($params) as element ()
                   {string-join(($org/postal__code/text(), $org/unrestricted__value/text(), 'ИНН ' || $org/inn/text() , 'КПП ' || $org/kpp/text()), ", ")}
                 </адрес_организации>
              </слушатель>
-           
-  return <слушатели>{$out}</слушатели>
+             
+ return <слушатели>{$out}</слушатели>
 };
 
 declare function кпк:зачисление ($params) 
