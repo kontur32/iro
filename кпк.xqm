@@ -38,7 +38,7 @@ let $result :=
 declare function кпк:сведения ($params) as element ()
 {
   let $org_path := iri-to-uri($кпк:config//dictionary[name/text()='oo']/location/text())
-  let $orgs := fetch:xml($org_path)/child::*/child::*
+  let $orgs := fetch:xml(escape-html-uri($org_path))/child::*/child::*
  
   let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')/child::*[признак[@имя = 'Фамилия']/text()]
   
