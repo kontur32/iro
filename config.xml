@@ -93,12 +93,8 @@
 			<location>http://iro37.ru:8984/иро/данные/образовательные организации</location>
 		</dictionary>  
 		<dictionary>
-			<name>schools</name>
-			<location>http://iro.od37.ru/dic/schools.xml</location>
-		</dictionary>
-		<dictionary>
 			<name>mo</name>
-			<location>http://iro.od37.ru/dic/mo.xml</location>
+			<location>http://iro37.ru:8984/иро/данные/муниципальные образования</location>
 		</dictionary>
 	</dictionaries>
 </config>

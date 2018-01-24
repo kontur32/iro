@@ -1,14 +1,24 @@
-(:модуль генераци отчетов по группам КПК:)
-(:для всех функций параметры передаются через $params as map{}:)
+(:~ 
+ : Модуль является частью проекта iro
+ : содержит функции генераци отчетов по группам КПК
+ : для всех функций параметры передаются через $params as map{}
+ :
+ : @author   iro/ssm
+ : @see      https://github.com/kontur32/iro/blob/dev2/README.md
+ : @version  0.1
+ :)
 
 module  namespace кпк = 'http://www.iroio.ru/кпк';
 
 import module namespace functx = "http://www.functx.com";
 import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 import module namespace config = 'config.iroio.ru' at 'config.xqm';
+import module namespace data = 'data.iroio.ru' at 'data.xqm';
 
-declare variable $кпк:config := doc('config.xml'); (:пути к словарям и модулям:)
+(:
+declare variable $кпк:config := doc('config.xml'); 
 declare variable $кпк:local := $config:local;
+:)
 
 declare %output:method("xml") function кпк:импорт ($params) as element()
 {
@@ -38,17 +48,20 @@ let $result :=
 
 declare function кпк:сведения ($params) as element ()
 {
-  let $org_path := iri-to-uri($кпк:config//dictionary[name/text()='oo']/location/text())
+  (:
+  let $org_path_global := iri-to-uri($кпк:config//dictionary[name/text()='oo']/location/text())
+  let $org_path_local := $кпк:local//dictionary[name/text()='оо']/location/text()
   let $orgs := 
-        if ($кпк:local//dictionary[name/text()='оо']/location/text())
-        then (doc($кпк:local//dictionary[name/text()='оо']/location/text())/child::*/child::*)
-        else (fetch:xml( $org_path)/child::*/child::*)
- 
+        if		($org_path_local)
+        then	(doc($org_path_local)/child::*/child::*)
+        else	(fetch:xml( $org_path_global)/child::*/child::*)
+   :)
+   
+  let $orgs := data:get-resource(config:get-dic-path('oo'))/child::*/child::*
   let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')/child::*[признак[@имя = 'Фамилия']/text()]
   
   let $out:=
       for $a in $memb
-     
       let $org := $orgs[inn = $a//признак[@имя='ИНН организации']/text()]
       order by  substring ($org/oktmo, 1, 3) descending, $org/mo/text()
       return <слушатель>
@@ -72,8 +85,13 @@ declare function кпк:сведения ($params) as element ()
 
 declare function кпк:зачисление ($params) 
  {
+    (:
     let $mo_dic := $кпк:config//dictionary[name/text()='mo']/location/text()
     let $mo := doc($mo_dic)/mo
+    :)
+    
+    let $mo := data:get-resource(config:get-dic-path('mo'))/child::*
+    
     let $memb := xlsx:fields-dir($params?курс, '*.xlsx')
     let $sort := for $i in $memb/child::*
                  order by $i//признак[@имя = "Фамилия"]/text()
@@ -178,30 +196,3 @@ declare function кпк:сводная ($param)
    </row>
    </rows>
  };
- 
- (: ------- Старые версии ----------:)
- declare  function кпк:сведения-old01($params) as node()
-{
-  let $sch_dic := $кпк:config//dictionary[name/text()='schools']/location/text()
-  let $sch := doc($sch_dic)/школы/школа
-  
-  let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')
-
-  let $out:=
-      for $a in $memb/child::*
-      let $index := string-join($a/child::*[@имя/data()= ('Муниципалитет', 'Организация')]/text(), '')
-      let $org := $sch[child::*[@имя = ('мо_короткое')]/text() || child::*[@имя = ('короткое')]/text() = $index]
-      return <слушатель>
-                <муниципалитет>{$org/поле[@имя="мо"]/data()}</муниципалитет>
-                <организация>{$org/поле[@имя="короткое"]/data()}</организация>
-                <руководитель>{$org/поле[@имя="руководитель"]/data()}</руководитель>
-                <ФИО_слушателя>{string-join($a/признак[@имя=('Фамилия', 'Имя', 'Отчество')]/text(), ' ')}</ФИО_слушателя>
-                <должность>{$a/признак[@имя='Должность']/text()}</должность>
-                <номер></номер>
-                <дата></дата>
-                <срок></срок>
-                <адрес_организации>{string-join(($org/поле[@имя="адрес"]/data(), 'ИНН ' || $org/поле[@имя="ИНН"]/data(), 'КПП ' || $org/поле[@имя="КПП"]/data()), ", ")}</адрес_организации>
-             </слушатель>
-           
-  return <слушатели>{$out}</слушатели>
-};

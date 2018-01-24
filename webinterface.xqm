@@ -1,3 +1,13 @@
+(:~ 
+ : Модуль является частью проекта iro
+ : содержит функции для вэб-интерфейса доступа к функциям проекта
+ :
+ : @author   iro/ssm
+ : @see      https://github.com/kontur32/iro/blob/dev2/README.md
+ : @version  0.1
+ :)
+
+
 module namespace html='html.iroio.ru';
 import module namespace config = 'config.iroio.ru' at 'config.xqm';
 import module namespace functx = "http://www.functx.com";
