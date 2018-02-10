@@ -66,8 +66,14 @@ declare function кпк:сведения ($params) as element ()
       order by  substring ($org/oktmo, 1, 3) descending, $org/mo/text()
       return <слушатель>
                 <номер></номер> 
-                <муниципалитет>{$org/mo/text()}</муниципалитет>
-                <организация>{$org/short__with__opf/text()}</организация>
+                <муниципалитет>
+                  {
+                   if ($org/city/text())
+                   then ('город ' || $org/city/text())
+                   else ($org/mo/text() || ' муниципальный район')
+                  }
+                </муниципалитет>
+                <организация>{$org/full__with__opf/text()}</организация>
                 <руководитель>{$org/name/text()}</руководитель>
                 <ФИО_слушателя>{string-join($a/признак[@имя=('Фамилия', 'Имя', 'Отчество')]/text(), ' ')}</ФИО_слушателя>
                 <должность>{$a/признак[@имя='Должность']/text()}</должность>
