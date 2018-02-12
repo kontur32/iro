@@ -36,7 +36,7 @@ declare
   {
     if ($update = '0')
     then (<p>есть новая версия ПО <a href = "http://localhost:8984/иро/web/update/make">(обновить)</a></p>)
-    else (<p>установлена актуальная версия ПО</p>)
+    else (<p>установлена актуальная версия ПО <a href = "http://localhost:8984/иро/web/update/make">(обновить)</a></p>)
   }
   <table>
     <tr>
