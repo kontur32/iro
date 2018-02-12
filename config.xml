@@ -90,11 +90,11 @@
 	<dictionaries>
 		<dictionary>
 			<name>oo</name>
-			<location>http://iro37.ru:8984/иро/данные/образовательные организации</location>
+			<location>http://dbx.iro37.ru/иро/данные/образовательные организации</location>
 		</dictionary>  
 		<dictionary>
 			<name>mo</name>
-			<location>http://iro37.ru:8984/иро/данные/муниципальные образования</location>
+			<location>http://dbx.iro37.ru/иро/данные/муниципальные образования</location>
 		</dictionary>
 	</dictionaries>
 </config>
