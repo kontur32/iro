@@ -1,6 +1,6 @@
 @echo off
 
-	set GITPath="C:\Users\Пользователь\Documents\webapp\iro"
+	cd %~dp0 
 	
 	rem  origin/HEAD
-	d: && cd %GITPath%\ && git.exe rev-parse %1
+	d: && cd .. && git.exe rev-parse %1

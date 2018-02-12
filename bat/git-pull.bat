@@ -1,9 +1,11 @@
 @echo off
 
-	
-	set GITPath="C:\Users\Пользователь\Documents\webapp\iro"
-	
+	cd %~dp0 
 	rem --progress -v --no-rebase "origin"
-	d: && cd %GITPath%\ && git.exe pull %1
+	d: && cd .. && git.exe pull %1
+	
+	
+	
+	
 	
 	

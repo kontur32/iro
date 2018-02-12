@@ -14,7 +14,7 @@ declare
     let $rev-parse := $base-dir || '../bat/git-rev-parse.bat'
     
     return
-        if (proc:execute($rev-parse, 'HEAD')//output =  proc:execute($rev-parse, 'origin/dev2')//output)
+        if (proc:execute($rev-parse, 'HEAD')//output =  proc:execute($rev-parse, 'origin/HEAD')//output)
         then (
           '1'
         )
