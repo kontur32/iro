@@ -13,7 +13,7 @@ declare default element namespace "http://schemas.openxmlformats.org/spreadsheet
 declare namespace r="http://schemas.openxmlformats.org/officeDocument/2006/relationships";
 
 (: функция возвращает содержимое компонента $xml_name из файла $xls_name :)
-declare function xlsx:get-xml ($file_path as xs:string, $sheet_name as xs:string) as node ()
+declare function xlsx:get-xml ($file_path as xs:string, $sheet_name as xs:string)
   {
         fn:parse-xml(
             archive:extract-text(
@@ -24,7 +24,7 @@ declare function xlsx:get-xml ($file_path as xs:string, $sheet_name as xs:string
  
 (: возращает лист Excel $sheet_data  в форме дерева, 
 заменяя значения индексов текстовых полей на их значения из $string_sheet :)
- declare function xlsx:string ($file_path as xs:string, $sheet_name as xs:string) as node()
+ declare function xlsx:string ($file_path as xs:string, $sheet_name as xs:string)
    {
       let $sheet_data := xlsx:get-xml($file_path, $sheet_name)
       let $strings := xlsx:get-xml($file_path, 'xl/sharedStrings.xml')//t
@@ -40,7 +40,7 @@ declare function xlsx:get-xml ($file_path as xs:string, $sheet_name as xs:string
   
 (:функция возравщает разобранный в дерево лист Excel $sheet_name из файла $xlsx_fullname,
 интерпретируя первую колонку таблицы как имя признака, а вторую колонку как его значение:)
-declare function xlsx:fields ($data_sheet as node(), $file_name as xs:string) as node()
+declare function xlsx:fields ($data_sheet as node(), $file_name as xs:string)
   {
    functx:change-element-ns-deep(  
    <файл>
@@ -53,7 +53,7 @@ declare function xlsx:fields ($data_sheet as node(), $file_name as xs:string) as
  
 (:возвращает дерево обработанных функцией xlsx:fields() файлы Excel из каталога $path,
 соответствующих маске $mask :)
- declare function xlsx:fields-dir ($path as xs:string, $mask as xs:string) as node()
+ declare function xlsx:fields-dir ($path as xs:string, $mask as xs:string)
    {
      let $file_list := file:list($path, false(), $mask)
      return  
