@@ -29,9 +29,15 @@ declare
 {
   let $config := $config:main
   let $user_exist := file:exists($html:user_path)
+  let $update := fetch:text (iri-to-uri('http://localhost:8984/иро/web/update/check'))
   return 
   <html>
   <p><i>{$html:local//moto/text()}</i></p>
+  {
+    if ($update = '0')
+    then (<p>есть новая версия ПО <a href = "http://localhost:8984/иро/web/update/make">(обновить)</a></p>)
+    else (<p>установлена актуальная версия ПО</p>)
+  }
   <table>
     <tr>
       <td>Пользователь:</td>
