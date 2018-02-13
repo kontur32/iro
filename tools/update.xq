@@ -8,7 +8,6 @@ declare
   %output:doctype-system("http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
   function update:check()
 {
-
     let $base-dir := file:base-dir()
     let $pull := $base-dir || '../bat/git-pull.bat'
     let $rev-parse := $base-dir || '../bat/git-rev-parse.bat'
