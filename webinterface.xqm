@@ -35,8 +35,8 @@ declare
   <p><i>{$html:local//moto/text()}</i></p>
   {
     if ($update = '0')
-    then (<p><a href = "http://localhost:8984/иро/web/update/make">(обновить)</a></p>)
-    else (<p><a href = "http://localhost:8984/иро/web/update/make">(обновить)</a></p>)
+    then (<p>Версия ПО актуальна. Обновление не требуется.</p>)
+    else (<p>Есть новая версия ПО. Желательно <a href = "http://localhost:8984/иро/web/update/make">обновить</a></p>)
   }
   <table>
     <tr>

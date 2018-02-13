@@ -12,14 +12,18 @@ declare
     let $base-dir := file:base-dir()
     let $pull := $base-dir || '../bat/git-pull.bat'
     let $rev-parse := $base-dir || '../bat/git-rev-parse.bat'
+    let $ls-remote := $base-dir || '../bat/git-ls-remote.bat'
     
     return
-        if (proc:execute($rev-parse, 'dev2')//output =  proc:execute($rev-parse, 'origin/dev2')//output)
+        if (
+          substring (proc:execute($rev-parse, 'HEAD')//output/text(), 1, 10) =  
+          substring (proc:execute($ls-remote, 'HEAD')//output/text(), 1, 10)
+        )
         then (
-          '1'
+          '0'
         )
         else (
-          '0'
+          '1'
         )
 };
 
