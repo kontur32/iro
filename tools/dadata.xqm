@@ -19,8 +19,13 @@ let $data :=
           )[2]/json/suggestions/_[data/type/text()="LEGAL" and not (starts-with(data/opf/code/text(), '3'))]
           return 
           <организация>{
-                              
-                              $binary//short__with__opf, 
+                              <short__with__opf>
+                              {
+                                if( $binary//short__with__opf/text())
+                                then ($binary//short__with__opf/text())
+                                else ($binary//full__with__opf/text())
+                              }
+                              </short__with__opf>, 
                               $binary//full__with__opf,
                               $binary//inn,
                               $binary//kpp,
