@@ -23,27 +23,39 @@ declare function курс:сводная($data, $row_name, $col_name)
   let $cols_name := distinct-values($data/child::*/child::*[@имя=$col_name][text()])
   
   return
-  element {QName('', 'файл')}
-  {
-    element {QName('', 'row')} 
+    element {QName('', 'файл')}
     {
-      element {QName('', 'cell')} {$row_name},
-      for $column in $cols_name
-      return 
-          element {QName('', 'cell')} {$column}
-    },
-    for $row in $rows_name
-    let $current_rows := $data/child::*[child::*[@имя=$row_name][text()=$row]]
-    return
-      element 
-        {QName('', 'row')}
-        {
-          element {QName('', 'cell')} {$row},
-          for $col in $cols_name
-          return  
-              element  
-                {QName('', 'cell')}
-                {count($current_rows/child::*[@имя='Пол'][text()=$col])}
-         }  
-  }  
+      element {QName('', 'строка')} 
+      {
+        element {QName('', 'ячейка')} {$row_name},
+        element {QName('','ячейка')} {'итого'},
+        for $column in $cols_name
+        return 
+            element {QName('', 'ячейка')} {$column}
+      },
+      for $row in $rows_name
+      let $current_rows := $data/child::*[child::*[@имя=$row_name][text()=$row]]
+      return
+        element 
+          {QName('', 'строка')}
+          {
+            element {QName('', 'ячейка')} {$row},
+            element {QName('', 'ячейка')} {count($current_rows)},
+            for $col in $cols_name
+            return  
+                element  
+                  {QName('', 'ячейка')}
+                  {count($current_rows/child::*[@имя=$col_name][text()=$col])}
+           },
+        element
+          {QName ('', 'строка')}
+          {
+            element {QName('', 'ячейка')} {'всего'},
+            for $col in $cols_name
+            return
+              element 
+                {QName('', 'ячейка')}
+                {count($data/child::*[child::*[@имя=$col_name][text()=$col]])}
+          }  
+    }  
 };
