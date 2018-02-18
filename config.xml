@@ -81,10 +81,12 @@
 			<namespace>'http://www.iroio.ru/кпк'</namespace>
 			<rel_path>'kpk.xqm'</rel_path>
 			<abs_path></abs_path>
-			<functions>
-				<function>
-				</function>
-			</functions>
+		</module>
+		<module>
+			<name>курс</name>
+			<namespace>'kurs.iroio.ru'</namespace>
+			<rel_path>'курс.xqm'</rel_path>
+			<abs_path></abs_path>
 		</module>
 	</modules>
 	<dictionaries>

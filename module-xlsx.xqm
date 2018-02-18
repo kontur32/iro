@@ -174,7 +174,7 @@ declare function xlsx:data-from-dir ($path as xs:string, $mask as xs:string)
 };
 
 (: --- возращает содержимое листа эксель в виде дереве - данные в строках  --- :)
-declare function xlsx:xlsx-to-table-rows($data as node()) as node()
+declare function xlsx:xlsx-to-table-rows($data as element()) as element()
 {
   let $heads := 
         for $b in $data//row[1]
