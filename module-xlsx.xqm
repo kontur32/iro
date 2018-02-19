@@ -61,7 +61,9 @@ declare function xlsx:fields ($data_sheet as node(), $file_name as xs:string)
          <каталог путь = '{$path}'>
                 {for $a in $file_list
                 return 
-                   xlsx:fields(xlsx:string($path||$a, 'xl/worksheets/sheet1.xml'), $a)
+                   for $b in ('xl/worksheets/sheet1.xml', 'xl/worksheets/sheet2.xml')
+                   return
+                       xlsx:fields(xlsx:string($path||$a, $b), $a)
                 }
          </каталог>, '', '')        
    };

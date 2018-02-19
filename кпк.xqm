@@ -48,16 +48,11 @@ let $result :=
 
 declare function кпк:сведения ($params) as element ()
 {
-  (:
-  let $org_path_global := iri-to-uri($кпк:config//dictionary[name/text()='oo']/location/text())
-  let $org_path_local := $кпк:local//dictionary[name/text()='оо']/location/text()
-  let $orgs := 
-        if		($org_path_local)
-        then	(doc($org_path_local)/child::*/child::*)
-        else	(fetch:xml( $org_path_global)/child::*/child::*)
-   :)
    
-  let $orgs := data:get-resource(config:get-dic-path('oo'))/child::*/child::*
+  let $orgs := for $i in ('do', 'oo')
+              return 
+                  data:get-resource(config:get-dic-path($i))/child::*/child::* 
+                  
   let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')/child::*[признак[@имя = 'Фамилия']/text()]
   
   let $out:=

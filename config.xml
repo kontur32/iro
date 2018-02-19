@@ -95,6 +95,10 @@
 			<location>http://dbx.iro37.ru/иро/данные/образовательные организации</location>
 		</dictionary>  
 		<dictionary>
+		<dictionary>
+			<name>do</name>
+			<location>http://dbx.iro37.ru/иро/данные/дошкольные образовательные учреждения</location>
+		</dictionary> 
 			<name>mo</name>
 			<location>http://dbx.iro37.ru/иро/данные/муниципальные образования</location>
 		</dictionary>
