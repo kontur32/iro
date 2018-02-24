@@ -174,6 +174,64 @@ declare function кпк:сводная ($param)
       </rows>
  };
  
+ declare function кпк:зачет ($params) 
+ {
+    
+    let $mo := data:get-resource(config:get-dic-path('mo'))/child::*
+    
+    let $memb := xlsx:fields-dir($params?курс, '*.xlsx')
+    let $sort := for $i in $memb/child::*
+                 order by $i//признак[@имя = "Фамилия"]/text()
+                 where $i//признак[@имя = "Фамилия"]/text()
+                 return $i
+      
+    let $rows :=  <строки>
+         {for $a in $sort
+         return <строка>
+                    <номер>
+                      {functx:index-of-node($sort, $a) || "."}
+                    </номер>
+                    <фио>
+                      {$a//признак[@имя = "Фамилия"]/text() || " " }{$a//признак[@имя = "Имя"]/text() || " "}{$a//признак[@имя = "Отчество"]/text()}
+                    </фио>
+					<отметка/>
+					<подпись_преподавателя/>
+                </строка>}
+      </строки>
+     return $rows
+};
+
+declare function кпк:отчисление ($params) 
+ {
+    
+    let $mo := data:get-resource(config:get-dic-path('mo'))/child::*
+    
+    let $memb := xlsx:fields-dir($params?курс, '*.xlsx')
+    let $sort := for $i in $memb/child::*
+                 order by $i//признак[@имя = "Фамилия"]/text()
+                 where $i//признак[@имя = "Фамилия"]/text()
+                 return $i
+      
+    let $rows :=  <строки>
+         {for $a in $sort
+         return <строка>
+                    <номер>
+                      {functx:index-of-node($sort, $a) || "."}
+                    </номер>
+                    <фио>
+                      {$a//признак[@имя = "Фамилия"]/text() || " " }{$a//признак[@имя = "Имя"]/text() || " "}{$a//признак[@имя = "Отчество"]/text()}
+                    </фио>
+                    <должность>
+                      {$mo/mo[@name_shot = $a//признак [@имя = "Муниципалитет"]/text()]/text() || ", " 
+                       || $a//признак [@имя = "Школа" or @имя = "Организация"]/text() || ", " 
+                       || $a//признак [@имя = "Должность"]/text() || " "
+                       || $a//признак [@имя = "Предмет"]/text()}
+                    </должность>
+                 </строка>}
+      </строки>
+     return $rows
+};
+ 
  declare function кпк:сводная-итоги ($params) 
  {
    let $data := кпк:сводная($params)

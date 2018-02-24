@@ -11,12 +11,20 @@
 				<alias>Сведения для дистанта</alias>
 			</form>
 			<form>
-				<name>файлы</name>
-				<alias>База данных слушателей данного КПК</alias>
-			</form>
-			<form>
 				<name>сведения</name>
 				<alias>Сведения для бухгалтерии</alias>
+			</form>
+			<form>
+				<name>зачет</name>
+				<alias>Зачетная ведомость</alias>
+			</form>
+			<form>
+				<name>отчисление</name>
+				<alias>Приказ об окончании</alias>
+			</form>
+			<form>
+				<name>файлы</name>
+				<alias>База данных слушателей данного КПК</alias>
 			</form>
 			<form>
 				<name>сводная-итоги</name>
