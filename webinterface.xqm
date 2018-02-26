@@ -7,7 +7,6 @@
  : @version  0.1
  :)
 
-
 module namespace html='html.iroio.ru';
 import module namespace config = 'config.iroio.ru' at 'config.xqm';
 import module namespace functx = "http://www.functx.com";
@@ -32,6 +31,9 @@ declare
   let $update := fetch:text (iri-to-uri('http://localhost:8984/иро/web/update/check'))
   return 
   <html>
+    <head>
+      <link rel="stylesheet" type="text/css" href="http://iro37.ru/res/css/iro-web.css"/>
+    </head>
   <p><i>{$html:local//moto/text()}</i></p>
   {
     if ($update = '0')
@@ -82,6 +84,9 @@ declare
   as element()
 {
   <html>
+      <head>
+        <link rel="stylesheet" type="text/css" href="http://iro37.ru/res/css/iro-web.css"/>
+      </head>
       <p><i>{$html:local//moto/text()}</i></p>
       <p>Пользователь: <a href = "{ $html:module_url}"> {$html:local//localuser/name/text()}</a></p>
       <p>Это данные раздела <b>{$part}</b></p>
@@ -109,6 +114,9 @@ declare
   as element()
 {
   <html>
+    <head>
+      <link rel="stylesheet" type="text/css" href="http://iro37.ru/res/css/iro-web.css"/>
+    </head>
       <p><i>{$html:local//moto/text()}</i></p>
       <table>
       <tr>
@@ -161,6 +169,9 @@ declare
   as element()
 {
   <html>
+    <head>
+      <link rel="stylesheet" type="text/css" href="http://iro37.ru/res/css/iro-web.css"/>
+    </head>
   {
     for $a in $html:local//localuser/usertype/text()
     return
