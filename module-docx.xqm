@@ -51,4 +51,14 @@ declare function docx:grid ()
                       <w:gridCol w:w="3191"/>
                     </w:tblGrid>
     return $grid                        
-  };    
+  }; 
+  
+ (: --- обработка шаблонов --- :)
+declare function docx:вставить-таблицу ($template, $data)
+{  
+  let $doc := parse-xml (archive:extract-text($template,  'word/document.xml')) 
+  let $rows := for $row in $data/child::*
+                return docx:row($row)
+ let $table := docx:table-insert-rows ($doc, $rows)
+  return  archive:update ($template, 'word/document.xml',  $table)
+};

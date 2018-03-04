@@ -56,9 +56,17 @@ declare function кпк:сведения ($params) as element ()
   let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')/child::*[признак[@имя = 'Фамилия']/text()]
   
   let $out:=
+<<<<<<< HEAD:кпк.xqm
       for $a in $memb
       let $org := $orgs[inn = $a//признак[@имя='ИНН организации']/text()]
       order by  substring ($org/oktmo, 1, 3) descending, $org/mo/text()
+=======
+      for $a in $memb/child::*
+      order by $a/child::*[@имя='Муниципалитет']/data()
+      where  $a/child::*[@имя='Фамилия']/data()
+      let $index := string-join($a/child::*[@имя/data()= ('Муниципалитет', 'Организация')]/text(), '')
+      let $org := $sch[child::*[@имя = ('мо_короткое')]/text() || child::*[@имя = ('короткое')]/text() = $index]
+>>>>>>> cfafc6bf483048738fc25c036cc0b2b51507d6c9:output.xqm
       return <слушатель>
                 <номер></номер> 
                 <муниципалитет>

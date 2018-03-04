@@ -5,6 +5,7 @@
 			<form>
 				<name>зачисление</name>
 				<alias>Приказ о зачислении</alias>
+<<<<<<< HEAD
 			</form>
 			<form>
 				<name>импорт</name>
@@ -21,10 +22,28 @@
 			<form>
 				<name>отчисление</name>
 				<alias>Приказ об окончании</alias>
+=======
+			</form>
+			<form>
+				<name>импорт</name>
+				<alias>Сведения для дистанта</alias>
+>>>>>>> cfafc6bf483048738fc25c036cc0b2b51507d6c9
 			</form>
 			<form>
 				<name>файлы</name>
 				<alias>База данных слушателей данного КПК</alias>
+			</form>
+			<form>
+<<<<<<< HEAD
+				<name>сводная-итоги</name>
+				<alias>Отчет 2 Порайонка</alias>
+				<params>&amp;строки=Муниципалитет&amp;столбцы=Пол&amp;поля=.*</params>
+			</form>
+			<form>
+				<name>сводная-итоги</name>
+=======
+				<name>сведения</name>
+				<alias>Сведения для бухгалтерии</alias>
 			</form>
 			<form>
 				<name>сводная-итоги</name>
@@ -33,6 +52,7 @@
 			</form>
 			<form>
 				<name>сводная-итоги</name>
+>>>>>>> cfafc6bf483048738fc25c036cc0b2b51507d6c9
 				<alias>Отчет-3 ФГОС</alias>
 				<params>&amp;строки=Муниципалитет&amp;столбцы=Тип организации&amp;поля=.*</params>
 			</form>

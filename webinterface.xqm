@@ -160,8 +160,13 @@ declare
               <tr> 
                 <td>{functx:if-empty($b/alias/text(), $b/name/text())}</td>
                 <td>
+<<<<<<< HEAD
                     <a href = "{ $html:base_url || '/html/' || $part || '/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>В браузере</button></a>
                     <a href = "{ $html:base_url || '/выгрузка/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>Сохранить</button></a>
+=======
+                    <a href = "{$html:local//base_url || '/' || $part || '/вывод/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>XML в браузере</button></a>
+                    <a href = "{$html:local//base_url || '/' || $part || '/выгрузка/' || $b/name/text() || '?курс=' || $html:local//root/text() || $html:local//localuser/@alias/data()|| '\' || $part || '\' || $data || '\' || $b/params/text()}"><button>Сохранить</button></a>
+>>>>>>> cfafc6bf483048738fc25c036cc0b2b51507d6c9
                 </td>
               </tr>
       }
