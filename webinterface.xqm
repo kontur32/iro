@@ -33,9 +33,12 @@ declare
   <html>
     <head>
       <link rel="stylesheet" type="text/css" href="http://iro37.ru/res/css/iro-web.css"/>
-    </head>
-  <p><i>{$html:local//moto/text()}</i></p>
-  {
+	  <link href="http://allfont.ru/allfont.css?fonts=victorian-gothic-one" rel="stylesheet" type="text/css" />
+	  <img style="position:absolute; margin-left: 0px; margin-top: 0px" src="http://iro37.ru/res/css/logo.gif" />
+	  <img style="position:absolute;left:720px;right:50px;margin-top: 285px" src="http://iro37.ru/res/css/ritter.gif" />
+	</head>
+    <p id="mot"><i>{$html:local//moto/text()}</i></p>
+{
     if ($update = '0')
     then (<p>Версия ПО актуальна. Обновление не требуется.</p>)
     else (<p>Есть новая версия ПО. Желательно <a href = "http://localhost:8984/иро/web/update/make">обновить</a></p>)
@@ -50,7 +53,7 @@ declare
       <td><b>{$html:local//root/text()}</b></td>
     </tr>
     <tr>
-      <td>Папка пользвателя:</td>
+      <td>Папка пользователя:</td>
       <td>{if ($user_exist) then (<b>{$html:local//localuser/@alias/data()} </b>) else ('не создана')}<a href = "{$html:module_url || '/админ/создать'}">  (проверить и создать)</a></td>
     </tr>
   </table>
@@ -71,6 +74,7 @@ declare
   )
   else (<p>разделы не созданы</p>)
   }
+  <p id="footer">(c) Kontur32 и немного Artmotor специально для ИРО Ивановской области, 2018 ** version 1.22 **</p>
   </html>
 };
 
@@ -84,14 +88,17 @@ declare
   as element()
 {
   <html>
-      <head>
-        <link rel="stylesheet" type="text/css" href="http://iro37.ru/res/css/iro-web.css"/>
-      </head>
-      <p><i>{$html:local//moto/text()}</i></p>
+    <head>
+      <link rel="stylesheet" type="text/css" href="http://iro37.ru/res/css/iro-web.css"/>
+	  <link href="http://allfont.ru/allfont.css?fonts=victorian-gothic-one" rel="stylesheet" type="text/css" />
+	  <img style="position:absolute; margin-left: 0px; margin-top: 0px" src="http://iro37.ru/res/css/logo.gif" />
+	  <img style="position:absolute;left:720px;right:50px;margin-top: 285px" src="http://iro37.ru/res/css/ritter.gif" />
+	</head>
+    <p id="mot"><i>{$html:local//moto/text()}</i></p>
       <p>Пользователь: <a href = "{ $html:module_url}"> {$html:local//localuser/name/text()}</a></p>
       <p>Это данные раздела <b>{$part}</b></p>
-      <p>Путь: {$html:user_path || $part || '\'}</p>
-      <p>Данные:</p>
+      <p id="ident">Путь: {$html:user_path || $part || '\'}</p>
+      <p id="ident">Данные:</p>
       <lu>
         {
         for $a in file:list($html:user_path || $part || '\', false())[ends-with(., '\')]
@@ -100,7 +107,8 @@ declare
                 {<a href = "{$a}">{$a}</a>}
             </li>
          }
-       </lu> 
+       </lu>
+  <p id="footer">(c) Kontur32 и немного Artmotor специально для ИРО Ивановской области, 2018 ** version 1.22 **</p>
   </html>
 };
 
@@ -116,8 +124,11 @@ declare
   <html>
     <head>
       <link rel="stylesheet" type="text/css" href="http://iro37.ru/res/css/iro-web.css"/>
-    </head>
-      <p><i>{$html:local//moto/text()}</i></p>
+	  <link href="http://allfont.ru/allfont.css?fonts=victorian-gothic-one" rel="stylesheet" type="text/css" />
+	  <img style="position:absolute; margin-left: 0px; margin-top: 0px" src="http://iro37.ru/res/css/logo.gif" />
+	  <img style="position:absolute;left:720px;right:50px;margin-top: 285px" src="http://iro37.ru/res/css/ritter.gif" />
+	</head>
+    <p id="mot"><i>{$html:local//moto/text()}</i></p>
       <table>
       <tr>
         <td>Пользователь:</td>
@@ -139,7 +150,7 @@ declare
       <br/>
       <table>
           <tr>
-            <th align = "center" colspan = "2">Формы для выгрузки данных</th>
+            <th align = "center" colspan = "2">Готовые документы для сохранения на компьютере</th>
           </tr>
       {
         for $a in $html:main//parts/part[@alias/data()=$part]
@@ -155,7 +166,7 @@ declare
               </tr>
       }
        </table>   
-       
+  <p id="footer">(c) Kontur32 и немного Artmotor специально для ИРО Ивановской области, 2018 ** version 1.22 **</p>     
   </html>
 };
 
@@ -184,6 +195,7 @@ declare
     <p>Проверяем наличие необходимых папок пользователя {$html:local//localuser/name/text()} ...</p>
     <p>... и при необходимости создаем</p>
     <a href = "{ $html:module_url}">вернуться на главную ... </a>
+  <p id="footer">(c) Kontur32 и немного Artmotor специально для ИРО Ивановской области, 2018 ** version 1.22 **</p>
   </html>
 };
 
