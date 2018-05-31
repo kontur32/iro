@@ -51,4 +51,31 @@ declare function docx:grid ()
                       <w:gridCol w:w="3191"/>
                     </w:tblGrid>
     return $grid                        
-  };    
+  };
+  
+declare function docx:заполнить ($данные, $документ)
+{
+  let $новый := 
+            copy $doc := $документ
+            modify 
+            for $p in $doc//w:p
+              for $r in $p/w:r
+                for $fld in $r/w:instrText
+                return
+                  replace node $fld with <w:t>{if ($данные/child::*[lower-case(@имя/data())=lower-case($fld/text())])
+                                               then ($данные/child::*[lower-case(@имя/data())=lower-case($fld/text())]/text())
+                                               else ('{{ЗНАЧЕНИЕ ПОЛЯ НЕ НАЙДЕНО}}')}</w:t>
+     
+            return $doc update delete node .//w:r[w:fldChar]
+  return $новый
+};
+
+declare function docx:обработать-шаблон($данные, $путь-шаблон, $путь-сохранение, $имя-файла )
+{
+    let $шаблон := file:read-binary($путь-шаблон)
+    let $документ := parse-xml (archive:extract-text($шаблон,  'word/document.xml'))
+    let $создать := if (file:is-dir( $путь-сохранение)) then() else (file:create-dir( $путь-сохранение))
+    
+    return 
+         file:write-binary ($путь-сохранение || $имя-файла,  archive:update($шаблон, "word/document.xml", serialize(docx:заполнить($данные, $документ))))
+};      

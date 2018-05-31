@@ -46,6 +46,11 @@
 				<alias>Отчет-8 Пол-Возраст</alias>
 				<params>&amp;строки=Пол&amp;столбцы=Возраст&amp;поля=.*</params>
 			</form>
+      <form>
+				<name>анкеты-по-шаблону</name>
+				<alias>Согласие на обработку</alias>
+				<params>&amp;шаблон=C:\Users\Пользователь\Desktop\Шаблон-персональные.docx&amp;папка=персональные\&amp;префикс=персональные_</params>
+			</form>
 		</part>
 		<part>
 			<name>расписание</name>
@@ -74,7 +79,7 @@
 		</module>
 		<module>
 			<name>выгрузка</name>
-			<namespace>'download.iroio.ru'</namespace>
+			<namespace>'http://www.iroio.ru/выгрузка'</namespace>
 			<rel_path>'download.xqm'</rel_path>
 			<abs_path></abs_path>
 		</module>

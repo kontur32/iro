@@ -2,6 +2,7 @@
 module namespace выгрузка = 'http://www.iroio.ru/выгрузка';
 
 import module namespace docx = "docx.iroio.ru" at 'module-docx.xqm';
+import module  namespace xlsx = 'xlsx.iroio.ru' at "module-xlsx.xqm"; 
 import module  namespace кпк = 'http://www.iroio.ru/кпк' at 'кпк.xqm';
 
 declare function выгрузка:зачисление ($path) as element()
@@ -92,4 +93,15 @@ declare function выгрузка:сводная-итоги ($path)
   let $file_name := $path?курс || 'сводная-итоги-' || $path?строки ||'-' || $path?столбцы ||'.xml'
   return 
   <p>Файл сохранен {$file_name}{file:write($file_name, кпк:сводная-итоги ($path), map{'omit-xml-declaration' : 'no'})}</p>
+};
+
+declare function выгрузка:анкеты-по-шаблону($params)
+{
+  <p>Формы сохранены в {$params?курс || $params?папка} {
+  let $данные := xlsx:fields-dir ($params?курс, '*.xlsx')//файл[признак[@имя='Фамилия']/text()]
+  for $i in $данные
+  let $имя-файла := string-join ($i//признак[@имя=('Фамилия', 'Имя', 'Отчество')]/text(), '_') ||  '.docx' 
+   return 
+       docx:обработать-шаблон($i, $params?шаблон, $params?курс || $params?папка, $params?префикс || $имя-файла )
+  }</p>
 };
