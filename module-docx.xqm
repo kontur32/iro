@@ -1,4 +1,5 @@
 module namespace docx = "docx.iroio.ru";
+import module namespace data = 'data.iroio.ru' at 'data.xqm';
 declare namespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
   
 (:функция возвращает строку таблицы Word, сформировнную из переданного узла:)
@@ -72,7 +73,7 @@ declare function docx:заполнить ($данные, $документ)
 
 declare function docx:обработать-шаблон($данные, $путь-шаблон, $путь-сохранение, $имя-файла )
 {
-    let $шаблон := file:read-binary($путь-шаблон)
+    let $шаблон :=   data:get-binary($путь-шаблон)
     let $документ := parse-xml (archive:extract-text($шаблон,  'word/document.xml'))
     let $создать := if (file:is-dir( $путь-сохранение)) then() else (file:create-dir( $путь-сохранение))
     

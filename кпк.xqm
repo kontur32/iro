@@ -51,7 +51,7 @@ declare function кпк:сведения ($params) as element ()
    
   let $orgs := for $i in ('do', 'oo')
               return 
-                  data:get-resource(config:get-dic-path($i))/child::*/child::* 
+                  data:get-xml(config:get-dic-path($i))/child::*/child::* 
                   
   let $memb := xlsx:fields-dir ($params?курс, '*.xlsx')/child::*[признак[@имя = 'Фамилия']/text()]
   
@@ -91,7 +91,7 @@ declare function кпк:зачисление ($params)
     let $mo := doc($mo_dic)/mo
     :)
     
-    let $mo := data:get-resource(config:get-dic-path('mo'))/child::*
+    let $mo := data:get-xml(config:get-dic-path('mo'))/child::*
     
     let $memb := xlsx:fields-dir($params?курс, '*.xlsx')
     let $sort := for $i in $memb/child::*
@@ -177,7 +177,7 @@ declare function кпк:сводная ($param)
  declare function кпк:зачет ($params) 
  {
     
-    let $mo := data:get-resource(config:get-dic-path('mo'))/child::*
+    let $mo := data:get-xml(config:get-dic-path('mo'))/child::*
     
     let $memb := xlsx:fields-dir($params?курс, '*.xlsx')
     let $sort := for $i in $memb/child::*
@@ -204,7 +204,7 @@ declare function кпк:сводная ($param)
 declare function кпк:отчисление ($params) 
  {
     
-    let $mo := data:get-resource(config:get-dic-path('mo'))/child::*
+    let $mo := data:get-xml(config:get-dic-path('mo'))/child::*
     
     let $memb := xlsx:fields-dir($params?курс, '*.xlsx')
     let $sort := for $i in $memb/child::*
