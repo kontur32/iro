@@ -111,8 +111,7 @@ declare function кпк:зачисление ($params)
                     <должность>
                       {$mo/mo[@name_shot = $a//признак [@имя = "Муниципалитет"]/text()]/text() || ", " 
                        || $a//признак [@имя = "Школа" or @имя = "Организация"]/text() || ", " 
-                       || $a//признак [@имя = "Должность"]/text() || " "
-                       || $a//признак [@имя = "Предмет"]/text()}
+                       || $a//признак [@имя = "Должность"]/text()}
                     </должность>
                  </строка>}
       </строки>
@@ -174,6 +173,41 @@ declare function кпк:сводная ($param)
       </rows>
  };
  
+ declare function кпк:сводная-итоги ($params) 
+ {
+   let $data := кпк:сводная($params)
+   let $dic_path := doc ('config_forms.xml')//field[@name/data()=$params?строки]//location/text()
+   let $rows_dic := doc($dic_path)/child::*/child::*/@name_shot/data()   
+   
+  return
+  <rows>
+  { 
+   for $a in $rows_dic
+   return <row><название>{$a}</название>{$data/child::*[название/text()=$a]/child::*[not (name()='название') and matches(name(), ($params?поля)) ]}</row>
+   }
+   <row>
+     <название>Всего</название>
+       {
+         for $a in distinct-values($data/child::*/child::*[not (name()='название') and matches(name(), ($params?поля))]/name())
+         let $b := $data/child::*/child::*[name()=$a]
+         let $c := <node>{sum($b)}</node>
+         return functx:change-element-names-deep($c, xs:QName('node'), xs:QName($a))
+       }
+   </row>
+   </rows>
+ };
+ 
+ declare function кпк:анкеты-по-шаблону ($params) 
+ {
+   <body>
+   <p>
+   <p>Вывод данных для этой формы не предусмотрен. Возможно только сохранение на диск</p>
+   </p>
+   </body>
+ };
+ 
+ (: ---------------------- код А.К. Калинина --------------------------- :)
+
  declare function кпк:зачет ($params) 
  {
     
@@ -231,36 +265,39 @@ declare function кпк:отчисление ($params)
       </строки>
      return $rows
 };
- 
- declare function кпк:сводная-итоги ($params) 
+declare function кпк:лист ($params) 
  {
-   let $data := кпк:сводная($params)
-   let $dic_path := doc ('config_forms.xml')//field[@name/data()=$params?строки]//location/text()
-   let $rows_dic := doc($dic_path)/child::*/child::*/@name_shot/data()   
-   
-  return
-  <rows>
-  { 
-   for $a in $rows_dic
-   return <row><название>{$a}</название>{$data/child::*[название/text()=$a]/child::*[not (name()='название') and matches(name(), ($params?поля)) ]}</row>
-   }
-   <row>
-     <название>Всего</название>
-       {
-         for $a in distinct-values($data/child::*/child::*[not (name()='название') and matches(name(), ($params?поля))]/name())
-         let $b := $data/child::*/child::*[name()=$a]
-         let $c := <node>{sum($b)}</node>
-         return functx:change-element-names-deep($c, xs:QName('node'), xs:QName($a))
-       }
-   </row>
-   </rows>
- };
- 
- declare function кпк:анкеты-по-шаблону ($params) 
- {
-   <body>
-   <p>
-   <p>Вывод данных для этой формы не предусмотрен. Возможно только сохранение на диск</p>
-   </p>
-   </body>
- };
+    (:
+    let $mo_dic := $кпк:config//dictionary[name/text()='mo']/location/text()
+    let $mo := doc($mo_dic)/mo
+    :)
+    
+    let $mo := data:get-xml(config:get-dic-path('mo'))/child::*
+    
+    let $memb := xlsx:fields-dir($params?курс, '*.xlsx')
+    let $sort := for $i in $memb/child::*
+                 order by $i//признак[@имя = "Фамилия"]/text()
+                 where $i//признак[@имя = "Фамилия"]/text()
+                 return $i
+      
+    let $rows :=  <строки>
+         {for $a in $sort
+         return <строка>
+                    <номер>
+                      {functx:index-of-node($sort, $a) || "."}
+                    </номер>
+                    <фио>
+                      {$a//признак[@имя = "Фамилия"]/text() || " " }{$a//признак[@имя = "Имя"]/text() || " "}{$a//признак[@имя = "Отчество"]/text()}
+                    </фио>
+                    <район>
+                      {$mo/mo[@name_shot = $a//признак [@имя = "Муниципалитет"]/text()]/text() || " "}
+                    </район>
+                    <должность>
+                       {$a//признак [@имя = "Школа" or @имя = "Организация"]/text() || ", " 
+                       || $a//признак [@имя = "Должность"]/text() || " "}
+                    </должность>
+                    <подпись></подпись>
+           </строка>}
+      </строки>
+     return $rows
+};

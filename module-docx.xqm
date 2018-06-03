@@ -71,12 +71,10 @@ declare function docx:заполнить ($данные, $документ)
   return $новый
 };
 
-declare function docx:обработать-шаблон($данные, $путь-шаблон, $путь-сохранение, $имя-файла )
-{
+declare function docx:обработать-шаблон($данные, $путь-шаблон)
+  {
     let $шаблон :=   data:get-binary($путь-шаблон)
-    let $документ := parse-xml (archive:extract-text($шаблон,  'word/document.xml'))
-    let $создать := if (file:is-dir( $путь-сохранение)) then() else (file:create-dir( $путь-сохранение))
-    
+    let $документ := parse-xml (archive:extract-text($шаблон,  'word/document.xml')) 
     return 
-         file:write-binary ($путь-сохранение || $имя-файла,  archive:update($шаблон, "word/document.xml", serialize(docx:заполнить($данные, $документ))))
-};      
+          archive:update($шаблон, "word/document.xml", serialize( docx:заполнить($данные, $документ) ))
+  };      

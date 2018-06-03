@@ -8,7 +8,7 @@ import module  namespace кпк = 'http://www.iroio.ru/кпк' at 'кпк.xqm';
 declare function выгрузка:зачисление ($path) as element()
 {
   let $tpl := 'http://iro37.ru/res/tpl/%d0%bf%d1%80%d0%b8%d0%ba%d0%b0%d0%b7_%d0%b7%d0%b0%d1%87%d0%b8%d1%81%d0%bb%d0%b5%d0%bd%d0%b8%d0%b5.docx'
-  let $template := fetch:binary($tpl) (:имя файла с шаблоном:)
+  let $template := fetch:binary($tpl)
   let $doc := parse-xml (archive:extract-text($template,  'word/document.xml')) 
   
   let $rows := for $row in кпк:зачисление($path)/child::*
@@ -17,14 +17,13 @@ declare function выгрузка:зачисление ($path) as element()
   let $entry := docx:table-insert-rows ($doc, $rows)
   let $updated := archive:update ($template, 'word/document.xml', $entry)
   
-  return  <p>Файл сохранен {$path?курс || 'приказ-зачисление.docx' }{file:write-binary($path?курс ||'приказ-зачисление.docx', $updated)}</p>
+  return  <p>Файл сохранен {$path?курс || 'формы\' || 'приказ-зачисление.docx' }{выгрузка:write-binary($updated, $path?курс || 'формы\', 'приказ-зачисление.docx')}</p>
 };
 
 declare function выгрузка:импорт ($path)
 {
-  <p>Файл сохранен {$path?курс || 'импорт.xml' }{file:write($path?курс|| 'импорт.xml', кпк:импорт ($path), map{'omit-xml-declaration' : 'no'})}</p>
+  <p>Файл сохранен {$path?курс || 'формы\' || 'импорт.xml' }{выгрузка:write-xml ( кпк:импорт ($path), $path?курс|| 'формы\' ,  'импорт.xml')}</p>
 };
-
 
 declare function выгрузка:сведения ($path) as element()
 {
@@ -38,13 +37,54 @@ declare function выгрузка:сведения ($path) as element()
  let $entry := docx:table-insert-rows ($doc, $rows)
  let $updated := archive:update ($template, 'word/document.xml', $entry)
 
- return <p>Файл сохранен {$path?курс || 'сведения.docx' }{file:write-binary ($path?курс ||'сведения.docx', $updated)}</p>
+ return <p>Файл сохранен {$path?курс  || 'формы\' || 'сведения.docx' }{выгрузка:write-binary ($updated, $path?курс || 'формы\', 'сведения.docx')}</p>
 };
 
-declare function выгрузка:сведения1 ($path)
+declare function выгрузка:файлы ($path)
 {
-  <p>Файл сохранен {$path?курс || 'сведения.xml' }{file:write($path?курс|| 'сведения.xml', кпк:сведения ($path), map{'omit-xml-declaration' : 'no'})}</p>
+  <p>Файл сохранен {$path?курс || 'формы\' || 'файлы.xml' }{выгрузка:write-xml( кпк:файлы ($path), $path?курс || 'формы\',  'файлы.xml')}</p>
 };
+
+declare function выгрузка:сводная ($path)
+{
+  let $имя-файла := 'сводная-' || $path?строки ||'-' || $path?столбцы ||'.xml'
+  return 
+  <p>Файл сохранен { $path?курс || 'формы\' || $имя-файла} {выгрузка:write-xml( кпк:сводная ($path), $path?курс || 'формы\' , $имя-файла )}</p>
+};
+
+declare function выгрузка:сводная-итоги ($path)
+{
+  let $имя-файла := 'сводная-' || $path?строки ||'-' || $path?столбцы ||'.xml'
+  return 
+  <p>Файл сохранен { $path?курс || 'формы\' || $имя-файла} {выгрузка:write-xml( кпк:сводная-итоги ($path), $path?курс || 'формы\' , $имя-файла )}</p>
+};
+
+declare function выгрузка:анкеты-по-шаблону($params)
+{
+  <p>Формы сохранены в {$params?курс || $params?папка} {
+    let $данные := xlsx:fields-dir ($params?курс, '*.xlsx')//файл[признак[@имя='Фамилия']/text()]
+    for $i in $данные
+    let $имя-файла := string-join ($i//признак[@имя=('Фамилия', 'Имя', 'Отчество')]/text(), '_') ||  '.docx' 
+    return 
+       выгрузка:write-binary (docx:обработать-шаблон($i, $params?шаблон ), $params?курс || $params?папка, $params?префикс || $имя-файла )
+  }</p>
+};
+
+declare function выгрузка:write-binary ($файл, $путь-сохранение, $имя-файла)
+{
+   let $создать := if (file:is-dir( $путь-сохранение)) then() else (file:create-dir( $путь-сохранение))
+   return
+         file:write-binary ($путь-сохранение || $имя-файла,  $файл)
+};
+
+declare function выгрузка:write-xml ($файл, $путь-сохранение, $имя-файла)
+{
+   let $создать := if (file:is-dir( $путь-сохранение)) then() else (file:create-dir( $путь-сохранение))
+   return
+         file:write ($путь-сохранение || $имя-файла,  $файл, map{'omit-xml-declaration' : 'no'})
+};
+
+(: ---------------------- код А.К. Калинина --------------------------- :)
 
 declare function выгрузка:зачет ($path) as element()
 {
@@ -58,7 +98,8 @@ declare function выгрузка:зачет ($path) as element()
   let $entry := docx:table-insert-rows ($doc, $rows)
   let $updated := archive:update ($template, 'word/document.xml', $entry)
   
-  return  <p>Файл сохранен {$path?курс || 'зачет.docx' }{file:write-binary($path?курс ||'зачет.docx', $updated)}</p>
+  return  
+      <p>Файл сохранен {$path?курс || 'формы\' || 'зачет.docx' }{выгрузка:write-binary( $updated, $path?курс || 'формы\', 'зачет.docx' )}</p>
 };
 
 declare function выгрузка:отчисление ($path) as element()
@@ -73,35 +114,22 @@ declare function выгрузка:отчисление ($path) as element()
   let $entry := docx:table-insert-rows ($doc, $rows)
   let $updated := archive:update ($template, 'word/document.xml', $entry)
   
-  return  <p>Файл сохранен {$path?курс || 'приказ-окончание.docx' }{file:write-binary($path?курс ||'приказ-окончание.docx', $updated)}</p>
-};
-
-declare function выгрузка:файлы ($path)
-{
-  <p>Файл сохранен {$path?курс || 'файлы.xml' }{file:write($path?курс|| 'файлы.xml', кпк:файлы ($path), map{'omit-xml-declaration' : 'no'})}</p>
-};
-
-declare function выгрузка:сводная ($path)
-{
-  let $file_name := $path?курс || 'сводная-' || $path?строки ||'-' || $path?столбцы ||'.xml'
   return 
-  <p>Файл сохранен {$file_name}{file:write($file_name, кпк:сводная ($path), map{'omit-xml-declaration' : 'no'})}</p>
+    <p>Файл сохранен {$path?курс || 'формы\' || 'приказ-окончание.docx' }{выгрузка:write-binary( $updated, $path?курс || 'формы\', 'приказ-окончание.docx' )}</p>
 };
 
-declare function выгрузка:сводная-итоги ($path)
+declare function выгрузка:лист ($path) as element()
 {
-  let $file_name := $path?курс || 'сводная-итоги-' || $path?строки ||'-' || $path?столбцы ||'.xml'
-  return 
-  <p>Файл сохранен {$file_name}{file:write($file_name, кпк:сводная-итоги ($path), map{'omit-xml-declaration' : 'no'})}</p>
-};
-
-declare function выгрузка:анкеты-по-шаблону($params)
-{
-  <p>Формы сохранены в {$params?курс || $params?папка} {
-  let $данные := xlsx:fields-dir ($params?курс, '*.xlsx')//файл[признак[@имя='Фамилия']/text()]
-  for $i in $данные
-  let $имя-файла := string-join ($i//признак[@имя=('Фамилия', 'Имя', 'Отчество')]/text(), '_') ||  '.docx' 
-   return 
-       docx:обработать-шаблон($i, $params?шаблон, $params?курс || $params?папка, $params?префикс || $имя-файла )
-  }</p>
+  let $tpl := 'http://iro37.ru/res/tpl/%d0%a0%d0%b5%d0%b3%d0%b8%d1%81%d1%82%d1%80%d0%b0%d1%86%d0%b8%d0%be%d0%bd%d0%bd%d1%8b%d0%b9_%d0%bb%d0%b8%d1%81%d1%82_%d0%9a%d0%9f%d0%9a.docx'
+  let $template := fetch:binary($tpl)
+  let $doc := parse-xml (archive:extract-text($template,  'word/document.xml')) 
+  
+  let $rows := for $row in кпк:лист($path)/child::*
+                return docx:row($row)
+  
+  let $entry := docx:table-insert-rows ($doc, $rows)
+  let $updated := archive:update ($template, 'word/document.xml', $entry)
+  
+  return  
+    <p>Файл сохранен {$path?курс || 'формы\' || 'регистрационный_лист.docx' }{выгрузка:write-binary( $updated, $path?курс || 'формы\', 'регистрационный_лист.docx' )}</p>
 };
