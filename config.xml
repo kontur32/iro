@@ -55,6 +55,11 @@
 				<alias>Согласие на обработку</alias>
 				<params>&amp;шаблон=http://iro37.ru/res/tpl/Шаблон_персональные_данные.docx&amp;папка=персональные\&amp;префикс=персональные_</params>
 			</form>
+      <form>
+				<name>шаблон-в-файл</name>
+				<alias>Согласие на обработку в один файл</alias>
+				<params>&amp;шаблон=http://iro37.ru/res/tpl/Шаблон_персональные_данные.docx&amp;папка=персональные\&amp;префикс=_сводная_</params>
+			</form>
 		</part>
 		<part>
 			<name>расписание</name>

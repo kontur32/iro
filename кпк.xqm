@@ -199,11 +199,13 @@ declare function кпк:сводная ($param)
  
  declare function кпк:анкеты-по-шаблону ($params) 
  {
-   <body>
-   <p>
-   <p>Вывод данных для этой формы не предусмотрен. Возможно только сохранение на диск</p>
-   </p>
-   </body>
+   xlsx:fields-dir ($params?курс, '*.xlsx')
+ };
+ 
+ 
+ declare function кпк:шаблон-в-файл ($params)
+ {
+   xlsx:fields-dir ($params?курс, '*.xlsx')
  };
  
  (: ---------------------- код А.К. Калинина --------------------------- :)

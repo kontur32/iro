@@ -70,6 +70,15 @@ declare function выгрузка:анкеты-по-шаблону($params)
   }</p>
 };
 
+declare function выгрузка:шаблон-в-файл($params)
+{
+  <p>Формы сохранены в {$params?курс || $params?папка || $params?префикс || 'персональные.docx'} {
+    let $данные := xlsx:fields-dir ($params?курс, '*.xlsx')//файл[признак[@имя='Фамилия']/text()]
+    
+    return 
+       выгрузка:write-binary (docx:шаблон-в-один ($данные, $params?шаблон ), $params?курс || $params?папка, $params?префикс || 'персональные.docx') }</p>
+};
+
 declare function выгрузка:write-binary ($файл, $путь-сохранение, $имя-файла)
 {
    let $создать := if (file:is-dir( $путь-сохранение)) then() else (file:create-dir( $путь-сохранение))

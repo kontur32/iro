@@ -77,4 +77,17 @@ declare function docx:обработать-шаблон($данные, $путь
     let $документ := parse-xml (archive:extract-text($шаблон,  'word/document.xml')) 
     return 
           archive:update($шаблон, "word/document.xml", serialize( docx:заполнить($данные, $документ) ))
+  };
+
+declare function docx:шаблон-в-один($данные, $путь-шаблон)
+  {
+    let $шаблон :=   data:get-binary($путь-шаблон)
+    let $документ := parse-xml (archive:extract-text($шаблон,  'word/document.xml'))
+    let $поля := 
+          for $i in $данные
+          return 
+              docx:заполнить($i, $документ)//w:p
+    let $итог := $документ update insert node $поля before .//w:body/w:p[1] 
+    return 
+          archive:update($шаблон, "word/document.xml", serialize($итог))
   };      
