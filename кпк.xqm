@@ -15,11 +15,6 @@ import module namespace xlsx = 'xlsx.iroio.ru' at 'module-xlsx.xqm';
 import module namespace config = 'config.iroio.ru' at 'config.xqm';
 import module namespace data = 'data.iroio.ru' at 'data.xqm';
 
-(:
-declare variable $кпк:config := doc('config.xml'); 
-declare variable $кпк:local := $config:local;
-:)
-
 declare %output:method("xml") function кпк:импорт ($params) as element()
 {
 
@@ -57,7 +52,7 @@ declare function кпк:сведения ($params) as element ()
   
   let $out:=
       for $a in $memb
-      let $org := $orgs[inn = $a//признак[@имя='ИНН организации']/text()]
+      let $org := $orgs[inn = $a//признак[@имя='ИНН организации']/text()][1] (:костыль для дублирующихся записей словаре:)
       order by  substring ($org/oktmo, 1, 3) descending, $org/mo/text()
       return <слушатель>
                 <номер></номер> 

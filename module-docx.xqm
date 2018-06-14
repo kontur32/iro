@@ -63,7 +63,7 @@ declare function docx:заполнить ($данные, $документ)
               for $r in $p/w:r
                 for $fld in $r/w:instrText
                 return
-                  replace node $fld with <w:t>{if ($данные/child::*[lower-case(@имя/data())=lower-case($fld/text())])
+                  replace node $fld with <w:t>{if ($данные/child::*[lower-case(@имя/data()) =lower-case($fld/text())])
                                                then ($данные/child::*[lower-case(@имя/data())=lower-case($fld/text())]/text())
                                                else ('{{ЗНАЧЕНИЕ ПОЛЯ НЕ НАЙДЕНО}}')}</w:t>
      

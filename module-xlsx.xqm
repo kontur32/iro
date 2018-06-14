@@ -37,6 +37,18 @@ declare function xlsx:get-xml ($file_path as xs:string, $sheet_name as xs:string
           return $c
       return $new
    };
+
+declare function xlsx:replace-index($data_sheet, $strings_sheet)
+{
+  let $strings := $strings_sheet//t
+  let $new := 
+          copy $c := $data_sheet 
+          modify 
+                for $i in $c//c[@t='s']
+                return replace value of node $i/v with $strings[number($i/v/text())+1]/text()
+          return $c
+  return $new
+};
   
 (:функция возравщает разобранный в дерево лист Excel $sheet_name из файла $xlsx_fullname,
 интерпретируя первую колонку таблицы как имя признака, а вторую колонку как его значение:)
@@ -176,7 +188,7 @@ declare function xlsx:data-from-dir ($path as xs:string, $mask as xs:string)
 };
 
 (: --- возращает содержимое листа эксель в виде дереве - данные в строках  --- :)
-declare function xlsx:xlsx-to-table-rows($data as element()) as element()
+declare function xlsx:xlsx-to-table-rows($data ) as element()
 {
   let $heads := 
         for $b in $data//row[1]
@@ -193,7 +205,7 @@ declare function xlsx:xlsx-to-table-rows($data as element()) as element()
       return 
           element {QName('','cell')} 
             {
-              attribute {'name'} {$heads[count($c/preceding-sibling::*)+1]}, 
+              attribute {'имя'} {$heads[count($c/preceding-sibling::*)+1]}, 
               $c/v/text()
             }
       }
