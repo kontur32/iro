@@ -30,7 +30,7 @@ declare function docx:table-insert-rows ($doc as node(), (:шаблон в ви�
   { 
     copy $c := $doc
     modify insert node $tr after $c//w:tbl/w:tr[1]      
-    return fn:serialize($c)
+    return serialize($c)
   };
 
 declare function docx:prop ()
@@ -90,4 +90,4 @@ declare function docx:шаблон-в-один($данные, $путь-шабл
     let $итог := $документ update insert node $поля before .//w:body/w:p[1] 
     return 
           archive:update($шаблон, "word/document.xml", serialize($итог))
-  };      
+  };

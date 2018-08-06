@@ -38,7 +38,9 @@ declare function xlsx:get-xml ($file_path as xs:string, $sheet_name as xs:string
       return $new
    };
 
-declare function xlsx:replace-index($data_sheet, $strings_sheet)
+(: то же, что и xlsx:string(), но в качестве аргументов принимает листы :)
+
+declare function xlsx:replace-index($data_sheet as node(), $strings_sheet as node()) as node()
 {
   let $strings := $strings_sheet//t
   let $new := 
