@@ -29,9 +29,17 @@ declare function docx:table-insert-rows ($doc as node(), (:шаблон в ви�
                                         $tr  ) (:строки для вставки в таблицу:) as xs:string
   { 
     copy $c := $doc
-    modify insert node $tr after $c//w:tbl/w:tr[1]      
+    modify insert node $tr after $c//w:tbl/w:tr[ 1 ]      
     return serialize($c)
   };
+  
+declare function docx:table-insert-rows-last ($doc as node(), (:шаблон в виде дерева:)
+                                        $tr  ) (:строки для вставки в таблицу:) as xs:string
+  { 
+    copy $c := $doc
+    modify insert node $tr after $c//w:tbl/w:tr[ last() ]      
+    return serialize($c)
+  };  
 
 declare function docx:prop ()
     {

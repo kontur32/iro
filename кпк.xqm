@@ -81,11 +81,7 @@ declare function кпк:сведения ($params) as element ()
 
 declare function кпк:зачисление ($params) 
  {
-    (:
-    let $mo_dic := $кпк:config//dictionary[name/text()='mo']/location/text()
-    let $mo := doc($mo_dic)/mo
-    :)
-    
+
     let $mo := data:get-xml(config:get-dic-path('mo'))/child::*
     
     let $memb := xlsx:fields-dir($params?курс, '*.xlsx')
