@@ -3,7 +3,7 @@ module namespace dadata = 'https://dadata.ru/';
 import module namespace xlsx = 'xlsx.iroio.ru' at '../module-xlsx.xqm';
 import module namespace functx = "http://www.functx.com";
 
-declare function dadata:get-from-dadata($org)
+declare function dadata:get-from-dadata( $org )
 {
 let $data :=
     <организации>
@@ -63,12 +63,12 @@ declare function dadata:add-orgtype ($org_egrul as element()*, $org_type as elem
       $c update insert node <org_type>{functx:if-empty($type, 'школа')}</org_type> into .
 };
 
-declare function dadata:merge-lists ($org_lists)
+declare function dadata:merge-lists ( $org_lists )
 {
          for $a in $org_lists
          let $org := fetch:xml($a)/child::*
          return 
-              dadata:add-orgtype (dadata:get-from-dadata($org/child::*/child::*[@name="ИНН" or @имя="ИНН"  ]/text())//организация, $org)
+              dadata:add-orgtype ( dadata:get-from-dadata($org/child::*/child::*[@name="ИНН" or @имя="ИНН"  ]/text())//организация, $org)
         
 };
  

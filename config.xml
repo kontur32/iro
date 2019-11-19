@@ -22,6 +22,10 @@
 				<name>отчисление</name>
 				<alias>Приказ об окончании</alias>
 			</form>
+      <form>
+				<name>лист</name>
+				<alias>Регистрационный лист</alias>
+			</form>
 			<form>
 				<name>файлы</name>
 				<alias>База данных слушателей данного КПК</alias>
@@ -45,6 +49,16 @@
 				<name>сводная-итоги</name>
 				<alias>Отчет-8 Пол-Возраст</alias>
 				<params>&amp;строки=Пол&amp;столбцы=Возраст&amp;поля=.*</params>
+			</form>
+      <form>
+				<name>анкеты-по-шаблону</name>
+				<alias>Согласие на обработку</alias>
+				<params>&amp;шаблон=http://iro37.ru/res/tpl/Шаблон_персональные_данные.docx&amp;папка=персональные\&amp;префикс=персональные_</params>
+			</form>
+      <form>
+				<name>шаблон-в-файл</name>
+				<alias>Согласие на обработку в один файл</alias>
+				<params>&amp;шаблон=http://iro37.ru/res/tpl/Шаблон_персональные_данные.docx&amp;папка=персональные\&amp;префикс=_сводная_</params>
 			</form>
 		</part>
 		<part>
@@ -74,7 +88,7 @@
 		</module>
 		<module>
 			<name>выгрузка</name>
-			<namespace>'download.iroio.ru'</namespace>
+			<namespace>'http://www.iroio.ru/выгрузка'</namespace>
 			<rel_path>'download.xqm'</rel_path>
 			<abs_path></abs_path>
 		</module>
